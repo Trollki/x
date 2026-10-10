@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Newfoundland Murder Wiki</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!--
+GOOGLE LOGIN SETUP (free, ~10 min). Until done, the site runs in "local mode" (edits saved in this browser only).
+1. console.firebase.google.com > Add project > Build > Authentication > Sign-in method > enable Google.
+2. Build > Firestore Database > Create. Rules tab, paste and Publish:
+   rules_version='2'; service cloud.firestore { match /databases/{d}/documents { match /{document=**} {
+     allow read: if true;
+     allow write: if request.auth != null && request.auth.token.email_verified == true
+       && request.auth.token.email == "vadym.litvinov01@gmail.com"; } } }
+3. Project settings > Your apps > Web (</>) > copy the config into FIREBASE_CONFIG below.
+4. Authentication > Settings > Authorized domains: add the domain you host on.
+5. Upload this file to Firebase Hosting, Netlify or GitHub Pages.
+Images are compressed and stored inside the database (no extra storage service needed).
+The Locations map uses OpenStreetMap tiles and needs internet; without it a notice is shown instead.
+-->
+<style>
+:root{--bg:#fff;--fg:#202122;--mut:#72777d;--link:#0645ad;--bd:#c8ccd1;--acc:#202122;--land:#f5f1e6;--sea:#dfe9f4;--font:system-ui,-apple-system,"Segoe UI",sans-serif;--hf:Georgia,serif;--w:820px}
+@media(prefers-color-scheme:dark){:root{--bg:#111;--fg:#ddd;--mut:#999;--link:#7aa7ee;--bd:#3a3a3a;--acc:#ddd;--land:#262626;--sea:#0f1620}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.6 var(--font)}
+a{color:var(--link);text-decoration:none;cursor:pointer}a:hover{text-decoration:underline}
+.w{max-width:var(--w);margin:auto;padding:0 18px}
+header{border-bottom:1px solid var(--bd);padding:14px 0 8px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.logo{font:1.3rem var(--hf);color:var(--fg);display:flex;align-items:center;gap:10px}.logo img{height:36px}
+nav{margin-top:8px;font-size:14px;display:flex;flex-wrap:wrap}nav a{margin-right:16px;padding-bottom:2px;border-bottom:2px solid transparent}nav a.on{border-color:var(--acc)}
+input,textarea,select,button{font:inherit;font-size:14px;color:var(--fg);background:var(--bg);border:1px solid var(--bd);padding:5px 8px;border-radius:2px;max-width:100%}
+button{cursor:pointer}button.sv{background:var(--acc);color:var(--bg);border-color:var(--acc)}form.s input{width:170px}
+h1{font:400 1.8rem var(--hf);border-bottom:1px solid var(--bd);margin:.6em 0 .4em}
+h2{font:400 1.3rem var(--hf);border-bottom:1px solid var(--bd);margin:1.4em 0 .4em}
+h3{font-size:1rem;margin:1em 0 .2em}ul{padding-left:1.2em}
+.mut{color:var(--mut);font-size:13px}
+.note{color:var(--mut);font-size:14px;border-left:3px solid var(--bd);padding-left:10px;margin:12px 0}
+.info{float:right;width:250px;margin:0 0 12px 18px;border:1px solid var(--bd);font-size:14px;border-collapse:collapse}
+.info td,.info th{padding:4px 8px;border-top:1px solid var(--bd);text-align:left;vertical-align:top}.info th{color:var(--mut);font-weight:400;width:35%}
+.info caption{font-weight:600;padding:5px;border:1px solid var(--bd);border-bottom:0}.info img{width:100%;display:block}
+.fig{margin:10px 0}.fig img{max-width:100%;height:auto;display:block;border:1px solid var(--bd)}.fig figcaption{color:var(--mut);font-size:13px}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.banner{width:100%;max-height:260px;object-fit:cover;display:block;margin-top:12px;border:1px solid var(--bd)}
+.th{width:44px;height:32px;object-fit:cover;vertical-align:middle;margin-right:8px}
+.f label{display:block;margin:10px 0 2px;font-size:12px;color:var(--mut)}.f input:not([type=checkbox]):not([type=color]),.f select,.f textarea{width:100%}.f textarea{min-height:75px}
+.f .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.f input[type=color]{width:60px;height:30px;padding:0}
+.ie{display:flex;gap:8px;margin:6px 0;align-items:center}.ie img{width:70px;height:50px;object-fit:cover;border:1px solid var(--bd)}
+.ne{margin:4px 0}.ne input{width:140px}
+.mb{margin-bottom:6px}
+.mapholder .map{width:100%;height:480px;border:1px solid var(--bd);touch-action:none;cursor:grab;background:var(--sea);display:block}
+.land{fill:var(--land);stroke:var(--mut);stroke-width:1.2;vector-effect:non-scaling-stroke}.sea{fill:var(--sea)}
+.pk .mapholder .map{height:300px}
+.leaflet-container{font:inherit}
+@media print{header form.s,header nav,#auth,.mb,footer{display:none}main{padding:0}.info{float:none;width:100%;margin:0 0 12px}}
+.bar{background:var(--bd);padding:5px 10px;font-size:13px;margin-top:6px;color:var(--fg)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin:0 4px 0 10px}
+.bdg{color:#fff;border-radius:9px;padding:1px 8px;font-size:11px;white-space:nowrap}
+.flt button.on{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.pp{min-width:210px;line-height:1.45}
+footer{border-top:1px solid var(--bd);margin-top:40px;padding:12px 0 30px;color:var(--mut);font-size:13px}
+@media(max-width:600px){.info{float:none;width:100%;margin:0 0 12px}.map{height:340px}.f .two{grid-template-columns:1fr}}
+</style><base target="_blank">
+</head><body>
+<header><div class="w"><div class="row"><a class="logo" href="#/" id="logo"></a>
+<form class="s" id="sf"><input id="q" placeholder="Search"> <button type="button" class="sv">Search</button></form></div>
+<div class="row"><nav id="nav"></nav><div id="auth" style="font-size:14px"></div></div></div></header>
+<main class="w" id="app"></main>
+<footer><div class="w" id="foot"></div></footer>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const ADMIN="vadym.litvinov01@gmail.com";
+const FIREBASE_CONFIG={apiKey:"",authDomain:"",projectId:"",appId:""}; // paste yours here
+const BUILTIN={home:"Home",cases:"Cases",timeline:"Timeline",locations:"Locations (map)",about:"About"};
+const DEF={title:"Newfoundland Murder Wiki",tagline:"A neutral, sourced archive of homicide cases in Newfoundland and Labrador, written with respect for victims and families.",notice:"A charge or arrest is an allegation, not a finding of guilt. Only court outcomes are stated as fact.",footer:"An independent archive of public records.",customcss:"",logo:"",banner:"",theme:{},home:{recent:1,years:1,locs:1,latest:1},
+nav:[{l:"Home",t:"home"},{l:"Cases",t:"cases"},{l:"Timeline",t:"timeline"},{l:"Locations",t:"locations"},{l:"About",t:"about"}],
+about:`## What this is
+A non-commercial reference documenting homicide cases in Newfoundland and Labrador in a neutral tone.
+
+## Area covered
+The island of Newfoundland, Labrador and their communities.
+
+## Sourcing
+Court records, police releases and reputable news reporting. Every article lists references; unsourced claims are removed.
+
+## Allegations and facts
+Allegations and charges are labelled and attributed. Only court-confirmed matters are stated as fact. Everyone is presumed innocent unless convicted.
+
+## Corrections
+Send the article name and a source to the editor. Verified corrections are made promptly.
+
+## Privacy
+Only general locations are published. Minors, witnesses and unrelated private details are omitted. Families may request a review.
+
+## Editorial policy
+No speculation, no gratuitous detail, and dignity for victims and families.`};
+const S=(id,name,year,month,place,region,status,lat,lon,summary)=>({id,name,year,month,place,region,status,lat,lon,summary,background:"Sample background, as reported by reliable sources.",investigation:"Sample police and court steps, attributed to their source.",legal:"A charge is an allegation, not a finding of guilt.",more:"",extra:"",images:[],refs:["Source one","Source two"]});
+const SAMPLES=[S("case-a","Case A (sample)",2026,3,"St. John's","Avalon Peninsula","Charged",47.56,-52.71,"Placeholder text showing the article layout."),S("case-b","Case B (sample)",2026,1,"Corner Brook","West Coast","Under investigation",48.95,-57.95,"Placeholder for a case under investigation."),S("case-c","Case C (sample)",2025,11,"Gander","Central","Convicted",48.96,-54.61,"Placeholder for a concluded case.")];
+const PLACES=[["St. John's","Avalon Peninsula",47.56,-52.71],["Mount Pearl","Avalon Peninsula",47.52,-52.81],["Paradise","Avalon Peninsula",47.53,-52.87],["Conception Bay South","Avalon Peninsula",47.5,-52.99],["Carbonear","Avalon Peninsula",47.74,-53.22],["Harbour Grace","Avalon Peninsula",47.7,-53.22],["Bay Roberts","Avalon Peninsula",47.6,-53.26],["Placentia","Avalon Peninsula",47.24,-53.97],["Marystown","Burin Peninsula",47.17,-55.15],["Clarenville","Eastern",48.16,-53.96],["Bonavista","Eastern",48.65,-53.11],["Gander","Central",48.96,-54.61],["Grand Falls-Windsor","Central",48.93,-55.65],["Lewisporte","Central",49.25,-55.07],["Twillingate","Central",49.65,-54.76],["Fogo","Central",49.72,-54.28],["Corner Brook","West Coast",48.95,-57.95],["Deer Lake","West Coast",49.17,-57.43],["Stephenville","West Coast",48.55,-58.58],["Channel-Port aux Basques","West Coast",47.57,-59.14],["St. Anthony","Northern Peninsula",51.36,-55.58],["Happy Valley-Goose Bay","Labrador",53.3,-60.33],["Labrador City","Labrador",52.94,-66.91],["Wabush","Labrador",52.9,-66.87],["Nain","Labrador",56.54,-61.69]];
+// Simplified outlines (lon,lat). Decorative; pin positions use real coordinates.
+const MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const $=s=>document.querySelector(s),app=$("#app");
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const live=!!FIREBASE_CONFIG.apiKey;
+let CASES=[],DELETED=[],PAGES=[],SITE=structuredClone(DEF),db=null,user=null,localEdit=false,usingSamples=false,EDITING=null,NEWAT=null,CLONE=null,cur=location.hash||"#/";
+const LS="nlmw2";
+function persist(){if(live)return;try{localStorage.setItem(LS,JSON.stringify({cases:CASES.concat(DELETED),pages:PAGES,site:SITE}))}catch(e){$("#foot").textContent="Browser storage is full or blocked: changes won't survive closing this tab. Try smaller images."}}
+function loadLocal(){try{const v=JSON.parse(localStorage.getItem(LS));if(v){const all=v.cases||[];CASES=all.filter(c=>!c.del);DELETED=all.filter(c=>c.del);PAGES=v.pages||[];SITE={...structuredClone(DEF),...v.site};return}}catch(e){}CASES=structuredClone(SAMPLES);DELETED=[]}
+const canEdit=()=>live?(!!user&&(user.email||"").toLowerCase()===ADMIN&&user.emailVerified):localEdit;
+const sorted=()=>[...CASES].sort((a,b)=>b.year-a.year||b.month-a.month);
+const link=c=>`<a href="#/case/${c.id}">${esc(c.name)}</a>`;
+const years=()=>[...new Set(CASES.map(c=>c.year))].sort((a,b)=>b-a);
+const places=()=>[...new Set(CASES.map(c=>c.place))].sort();
+const th=c=>c.images&&c.images[0]?`<img class="th" src="${esc(c.images[0].src)}" alt="">`:"";
+const byYear=f=>years().map(y=>`<h2>${y}</h2><ul>${sorted().filter(c=>c.year==y).map(f).join("")}</ul>`).join("")||"<p class=mut>No cases yet.</p>";
+const inl=t=>t.replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*(.+?)\*/g,"<i>$1</i>").replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>').replace(/\[([^\]]+)\]\((#\/[^)\s]+)\)/g,'<a href="$2">$1</a>');
+const fig=m=>`<figure class="fig"><img src="${esc(m.src)}" alt="${esc(m.cap)}">${m.cap?`<figcaption>${esc(m.cap)}</figcaption>`:""}</figure>`;
+function rich(text,imgs=[],skip=0){const used=new Set(skip?[0]:[]);let h="",p=[],ul=[];
+const fl=()=>{if(p.length)h+=`<p>${inl(p.join("<br>"))}</p>`;if(ul.length)h+=`<ul>${ul.map(x=>`<li>${inl(x)}</li>`).join("")}</ul>`;p=[];ul=[]};
+for(const l of esc(text||"").split("\n")){if(l.startsWith("## ")){fl();h+=`<h2>${inl(l.slice(3))}</h2>`}else if(l.startsWith("- ")){if(p.length)fl();ul.push(l.slice(2))}else if(!l.trim())fl();else{if(ul.length)fl();p.push(l)}}fl();
+h=h.replace(/\[img (\d+)\]/g,(a,n)=>{const m=imgs[n-1];if(!m)return"";used.add(n-1);return fig(m)});
+const rest=imgs.map((m,i)=>used.has(i)?"":fig(m)).join("");return h+(rest?`<div class="gal">${rest}</div>`:"")}
+const NOTE=()=>SITE.notice?`<p class="note">${esc(SITE.notice)}</p>`:"";
+const EL=h=>canEdit()?`<p class="mut"><a href="${h}">[Edit this page]</a></p>`:"";
+const GEN=()=>canEdit()?`<p class="mut">Generated from the articles. Edit an article to change it.</p>`:"";
+const slug=s=>String(s).toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")||"page";
+// ---------- map ----------
+const SKEY=s=>{s=(s||"").toLowerCase();return s.includes("unsolved")||s.includes("investigat")?"unsolved":s.includes("charged")?"charged":s.includes("convict")?"convicted":s.includes("acquit")?"acquitted":"other"};
+const SCOL={unsolved:"#c62828",charged:"#ef6c00",convicted:"#6a1b9a",acquitted:"#2e7d32",other:"#1565c0"};
+const COL=s=>SCOL[SKEY(s)];
+const LEG=`<p class="mut">Pin colour: <span class="dot" style="background:#c62828"></span>unsolved / investigating<span class="dot" style="background:#ef6c00"></span>charged<span class="dot" style="background:#6a1b9a"></span>convicted<span class="dot" style="background:#2e7d32"></span>acquitted<span class="dot" style="background:#1565c0"></span>other</p>`;
+const mapHTML=()=>`<div class="mapbox"><div class="mb"><button type="button" data-v="island">Island</button> <button type="button" data-v="lab">Labrador</button> <button type="button" data-v="all">Whole province</button> <button type="button" data-z="in">+</button> <button type="button" data-z="out">−</button> <span class="mut" id="mapnote"></span></div><div class="mapholder"></div></div>`;
+const LFB={island:[[46.45,-59.35],[51.78,-52.35]],lab:[[50.85,-68.6],[60.65,-54.75]],all:[[46.35,-68.6],[60.75,-52.25]]};
+function mapInit(box,o){
+const note=box.querySelector("#mapnote");
+if(!window.L){box.querySelector(".mapholder").innerHTML='<p class="mut" style="padding:24px 12px">The map needs an internet connection to load. The lists below still work.</p>';return{mark(){}}}
+note.textContent="Scroll to zoom, drag to move. Click a pin for details.";
+const hold=box.querySelector(".mapholder");hold.innerHTML="<div class='map'></div>";
+const NLB=[[44.5,-70.5],[62.5,-50.5]];
+const map=L.map(hold.firstChild,{scrollWheelZoom:true,minZoom:5,maxBounds:NLB,maxBoundsViscosity:1,zoomControl:false});
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+map.fitBounds(LFB.island);
+box.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>map.flyToBounds(LFB[b.dataset.v],{duration:.6}));
+box.querySelectorAll("[data-z]").forEach(b=>b.onclick=()=>b.dataset.z=="in"?map.zoomIn():map.zoomOut());
+L.control.scale({imperial:false}).addTo(map);
+const ly=L.layerGroup().addTo(map);
+const Ms=[];
+(o.pins||[]).forEach(p=>{const c=p.c,m=L.circleMarker([p.lat,p.lon],{radius:9,color:"#fff",weight:1.5,fillColor:p.color,fillOpacity:.95}).addTo(ly);Ms.push({m,st:p.st,yr:p.yr});
+m.bindPopup(`<div class="pp">${th(c)}<b><a href="#/case/${c.id}">${esc(c.name)}</a></b> <span class="bdg" style="background:${p.color}">${esc(c.status)}</span><br><span class="mut">${MON[c.month-1]} ${c.year} \u00b7 ${esc(c.place)}</span><br>${esc(c.summary)}</div>`);
+m.on("mouseover",()=>m.setStyle({radius:12,weight:2.5})).on("mouseout",()=>m.setStyle({radius:9,weight:1.5}));
+m.on("click",()=>o.onPin&&o.onPin(p))});
+let mk=null;
+const mark=(la,lo)=>{la=+la;lo=+lo;if(!isFinite(la)||!isFinite(lo))return;if(mk)mk.setLatLng([la,lo]);else mk=L.circleMarker([la,lo],{radius:13,color:"#e00",weight:2,fillColor:"#e00",fillOpacity:.15}).addTo(map)};
+if(o.pick)map.on("click",e=>{if(e.originalEvent&&e.originalEvent.target&&e.originalEvent.target.closest&&e.originalEvent.target.closest(".leaflet-interactive"))return;mark(e.latlng.lat,e.latlng.lng);o.pick(e.latlng.lat,e.latlng.lng)});
+if(o.marker&&o.marker.lat!=null)mark(o.marker.lat,o.marker.lon);
+setTimeout(()=>map.invalidateSize(),60);
+return{mark,filter:f=>Ms.forEach(x=>{const on=!f||f(x);if(on){if(!map.hasLayer(x.m))x.m.addTo(map)}else if(map.hasLayer(x.m))map.removeLayer(x.m)})}}
+const pins=()=>CASES.filter(c=>isFinite(c.lat)&&isFinite(c.lon)&&c.lat!==null&&c.lon!==null).map(c=>({c,lat:+c.lat,lon:+c.lon,color:COL(c.status),st:SKEY(c.status),yr:c.year}));
+// ---------- image / nav editors ----------
+const shrink=(file,max=900)=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.75))};im.onerror=()=>r(null);im.src=fr.result};fr.readAsDataURL(file)});
+function imgEd(box,arr,max=99){const draw=()=>{box.innerHTML=arr.map((m,i)=>`<div class="ie"><img src="${esc(m.src)}" alt=""><div><input data-c="${i}" value="${esc(m.cap)}" placeholder="Caption"> <button type="button" data-u="${i}">↑</button> <button type="button" data-r="${i}">Remove</button> <span class="mut">[img ${i+1}]</span></div></div>`).join("")+(arr.length<max?`<div class="mut">Add image: <input type="file" accept="image/*" multiple> or URL <input class="url" placeholder="https://…" size="20"> <button type="button" data-a="1">Add</button></div>`:"");
+box.querySelectorAll("[data-c]").forEach(i=>i.oninput=()=>arr[i.dataset.c].cap=i.value);
+box.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>{const i=+b.dataset.u;if(i>0){[arr[i-1],arr[i]]=[arr[i],arr[i-1]];draw()}});
+box.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{arr.splice(+b.dataset.r,1);draw()});
+const fi=box.querySelector("input[type=file]");if(fi)fi.onchange=async()=>{for(const f of fi.files){const s=await shrink(f);if(s)arr.push({src:s,cap:""})}while(arr.length>max)arr.shift();draw()};
+const ab=box.querySelector("[data-a]");if(ab)ab.onclick=()=>{const u=box.querySelector(".url").value.trim();if(u){arr.push({src:u,cap:""});while(arr.length>max)arr.shift();draw()}}};draw()}
+function navEd(box,arr){const opts=n=>[...Object.entries(BUILTIN),...PAGES.map(p=>["page:"+p.id,"Page: "+p.title]),...(n.t=="__new"?[["__new","(new blank page)"]]:[])];
+const draw=()=>{box.innerHTML=arr.map((n,i)=>`<div class="ne"><input data-l="${i}" value="${esc(n.l)}"> <select data-t="${i}">${opts(n).map(([k,v])=>`<option value="${esc(k)}" ${n.t==k?"selected":""}>${esc(v)}</option>`).join("")}</select> <button type="button" data-u="${i}">↑</button><button type="button" data-d="${i}">↓</button><button type="button" data-x="${i}">Remove</button></div>`).join("")+`<button type="button" data-add="1">+ Add tab</button>`;
+box.querySelectorAll("[data-l]").forEach(i=>i.oninput=()=>arr[i.dataset.l].l=i.value);box.querySelectorAll("[data-t]").forEach(i=>i.onchange=()=>arr[i.dataset.t].t=i.value);
+box.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>{const i=+b.dataset.u;if(i>0){[arr[i-1],arr[i]]=[arr[i],arr[i-1]];draw()}});
+box.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{const i=+b.dataset.d;if(i<arr.length-1){[arr[i+1],arr[i]]=[arr[i],arr[i+1]];draw()}});
+box.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{arr.splice(+b.dataset.x,1);draw()});
+box.querySelector("[data-add]").onclick=()=>{arr.push({l:"New tab",t:"__new"});draw()}};draw()}
+let DRAFT=[],DNAV=[],DLOGO=[],DBAN=[];
+// ---------- pages ----------
+const R={
+home(){const H=SITE.home||{};return`<h1>${esc(SITE.title)}</h1>${EL("#/admin")}${SITE.banner?`<img class="banner" src="${esc(SITE.banner)}" alt="">`:""}${rich(SITE.tagline)}<p class="mut">${CASES.length} articles.</p>${NOTE()}
+${(()=>{const F=CASES.filter(c=>c.feat);return F.length?`<h2>Featured cases</h2><ul>${F.map(c=>`<li>${th(c)}${link(c)} <span class="mut">${MON[c.month-1]} ${c.year}, ${esc(c.place)}</span></li>`).join("")}</ul>`:""})()}
+${H.recent?`<h2>Recent cases</h2><ul>${sorted().slice(0,5).map(c=>`<li>${th(c)}${link(c)} <span class="mut">${MON[c.month-1]} ${c.year}, ${esc(c.place)}</span></li>`).join("")}</ul>`:""}
+${H.years?`<h2>Browse by year</h2><p>${years().map(y=>`<a href="#/cases">${y}</a>`).join(" · ")}</p>`:""}
+${H.locs?`<h2>Browse by location</h2><p>${places().map(p=>`<a href="#/locations">${esc(p)}</a>`).join(" · ")}</p>`:""}
+${H.latest?`<h2>Latest additions</h2><ul>${[...CASES].reverse().slice(0,3).map(c=>`<li>${link(c)}</li>`).join("")}</ul>`:""}`},
+cases(){return`<h1>Cases</h1>${canEdit()?`<p><a href="#/edit/">+ New article</a></p>`:""}${byYear(c=>`<li>${th(c)}${link(c)} <span class="mut">${esc(c.place)}, ${esc(c.status)}</span></li>`)}`},
+timeline(){return`<h1>Timeline</h1>${GEN()}${byYear(c=>`<li>${MON[c.month-1]}: ${link(c)}</li>`)}`},
+locations(){const rg=[...new Set(CASES.map(c=>c.region))].sort();return`<h1>Locations</h1><p class="mut">Cases are shown by general area. Exact addresses are never published.</p>
+<p class="flt">Show: <button type="button" data-f="all" class="on">All</button> <button type="button" data-f="unsolved">Unsolved</button> <button type="button" data-f="charged">Charged</button> <button type="button" data-f="convicted">Convicted</button> <button type="button" data-f="acquitted">Acquitted</button> <button type="button" data-f="other">Other</button> <span class="mut">&middot; from year</span> <input type="range" id="yr" style="width:160px;vertical-align:middle"> <b id="yrr"></b></p>${mapHTML()}${LEG}<div id="pinfo" class="note">${canEdit()?"Click a pin to open it, or click empty land to start a new case at that spot.":"Click a pin to see the case."}</div>`+rg.map(r=>`<h2>${esc(r)}</h2>`+places().filter(p=>CASES.some(c=>c.place==p&&c.region==r)).map(p=>`<h3>${esc(p)}</h3><ul>${sorted().filter(c=>c.place==p).map(c=>`<li>${link(c)} (${c.year})</li>`).join("")}</ul>`).join("")).join("")},
+search(q){q=(q||"").trim();const t=q.toLowerCase().split(/\s+/).filter(Boolean);const m=x=>t.every(w=>x.toLowerCase().includes(w));
+const a=t.length?CASES.filter(c=>m([c.name,c.year,MON[c.month-1],c.place,c.region,c.status,c.summary,c.background,c.investigation,c.legal,c.more,c.extra].join(" "))):[],b=t.length?PAGES.filter(p=>m(p.title+" "+p.body)):[];
+return`<h1>Search</h1>`+(q?`<p class="mut">${a.length+b.length} result(s) for “${esc(q)}”</p>`+a.map(c=>`<p>${link(c)}<br><span class="mut">${MON[c.month-1]} ${c.year}, ${esc(c.place)}, ${esc(c.status)}</span><br>${esc(c.summary)}</p>`).join("")+b.map(p=>`<p><a href="#/page/${p.id}">${esc(p.title)}</a><br><span class="mut">Page</span></p>`).join(""):`<p class="mut">Search names, dates, locations, pages and article text.</p>`)},
+case(id){const c=CASES.find(x=>x.id==id);if(!c)return`<h1>No such article</h1>`;const ex=(c.extra||"").split("\n").filter(l=>l.includes(":")).map(l=>{const i=l.indexOf(":");return`<tr><th>${esc(l.slice(0,i).trim())}</th><td>${esc(l.slice(i+1).trim())}</td></tr>`}).join("");
+const body=`<p>${esc(c.summary)}</p>`+[["Background",c.background],["Investigation",c.investigation],["Legal proceedings",c.legal]].map(([h,t])=>t?`<h2>${h}</h2><p>${esc(t)}</p>`:"").join("");
+return`<h1>${esc(c.name)}</h1>${canEdit()?`<p class="mut"><a href="#/edit/${c.id}">Edit</a> · <a id="clone">Clone</a> · <a id="del">Delete</a></p>`:""}${NOTE()}
+<table class="info"><caption>${esc(c.name)}</caption>${c.images&&c.images[0]?`<tr><td colspan="2" style="padding:0"><img src="${esc(c.images[0].src)}" alt="${esc(c.images[0].cap)}"></td></tr>`:""}<tr><th>Date</th><td>${MON[c.month-1]} ${c.year}</td></tr><tr><th>Location</th><td>${esc(c.place)}</td></tr><tr><th>Region</th><td>${esc(c.region)}</td></tr><tr><th>Status</th><td>${esc(c.status)}</td></tr>${ex}${c.updated?`<tr><th>Updated</th><td>${new Date(c.updated).toLocaleDateString()}</td></tr>`:""}</table>
+${body}${rich(c.more,c.images||[],1)}<h2>References</h2><ol>${(c.refs||[]).map(r=>`<li>${esc(r)}</li>`).join("")}</ol>
+<div class="bar" style="clear:both">Categories: <a href="#/cases">${c.year}</a> · <a href="#/locations">${esc(c.region)}</a> · ${esc(c.status)}</div>`},
+edit(id){if(!canEdit())return`<h1>Edit</h1><p>Sign in with the editor's Google account to edit.</p>`;
+let c=CASES.find(x=>x.id==id)||{year:new Date().getFullYear(),month:1,refs:[],images:[],lat:NEWAT?NEWAT.lat:null,lon:NEWAT?NEWAT.lon:null};NEWAT=null;
+if(CLONE){const o=CASES.find(x=>x.id==CLONE);CLONE=null;if(o)c={...structuredClone(o),name:o.name+" (copy)",images:structuredClone(o.images||[])}}
+EDITING=c;DRAFT=structuredClone(c.images||[]);
+const T=(k,l,r)=>`<label>${l}</label><textarea name="${k}" ${r||""}>${esc(c[k])}</textarea>`;
+return`<h1>${c.id?"Edit":"New"} article</h1><form class="f" id="ef"><label>Name</label><input name="name" required value="${esc(c.name)}">
+<div class="two"><div><label>Year</label><input name="year" type="number" required value="${c.year}"></div><div><label>Month</label><select name="month">${MON.map((m,i)=>`<option value="${i+1}" ${c.month==i+1?"selected":""}>${m}</option>`).join("")}</select></div></div>
+<div class="two"><div><label>Community (pick from list to auto-place on the map)</label><input name="place" list="pl" required value="${esc(c.place)}"><datalist id="pl">${PLACES.map(p=>`<option value="${esc(p[0])}">`).join("")}</datalist></div><div><label>Region</label><input name="region" required value="${esc(c.region)}"></div></div>
+<label>Status (e.g. Unsolved, Charged, Convicted, Acquitted)</label><input name="status" required value="${esc(c.status)}">
+<label>Map point: click the map, or type coordinates</label><div class="pk">${mapHTML()}</div><div class="two"><div><label>Latitude</label><input name="lat" value="${c.lat??""}"></div><div><label>Longitude</label><input name="lon" value="${c.lon??""}"></div></div>
+<label><input type="checkbox" name="feat" ${c.feat?"checked":""}> Featured case (shown on the home page)</label>${T("summary","Summary")}${T("background","Background")}${T("investigation","Investigation")}${T("legal","Legal proceedings")}
+${T("more","More sections (## Heading, - bullets, **bold**, [img 1] places picture 1 here)")}${T("extra","Extra infobox rows (one per line, Label: value)")}
+<label>Images (first one appears in the infobox)</label><div id="ie"></div>
+<label>References (one per line)</label><textarea name="refs">${esc((c.refs||[]).join("\n"))}</textarea>
+<p><button type="button" class="sv">Save</button> <a href="#/cases">Cancel</a></p><p class="mut" id="msg"></p></form>`},
+page(id){const p=PAGES.find(x=>x.id==id);if(!p)return`<h1>No such page</h1>`;return`<h1>${esc(p.title)}</h1>${canEdit()?`<p class="mut"><a href="#/editpage/${p.id}">[Edit this page]</a></p>`:""}${rich(p.body,p.images||[])}`},
+editpage(id){if(!canEdit())return`<h1>Edit</h1><p>Sign in with the editor's Google account to edit.</p>`;const p=PAGES.find(x=>x.id==id)||{title:"",body:"",images:[]};EDITING=p;DRAFT=structuredClone(p.images||[]);
+return`<h1>${p.id?"Edit":"New"} page</h1><form class="f" id="pf"><label>Title</label><input name="title" required value="${esc(p.title)}">
+<label>Text (## Heading, - bullets, **bold**, *italic*, [text](https://link), [img 1] places picture 1 here)</label><textarea name="body" style="min-height:240px">${esc(p.body)}</textarea>
+<label>Images</label><div id="ie"></div>${p.id?"":`<label><input type="checkbox" name="tab" checked> Also add as a tab in the top bar</label>`}
+<p><button type="button" class="sv">Save</button> ${p.id?`<a id="delp">Delete page</a> · `:""}<a href="#/admin">Cancel</a></p><p class="mut" id="msg"></p></form>`},
+about(){return`<h1>About</h1>${EL("#/admin")}${rich(SITE.about)}`},
+admin(){if(!canEdit())return`<h1>Customize</h1><p>Sign in with the editor's Google account to customize the site.</p>`;
+DNAV=structuredClone(SITE.nav);DLOGO=SITE.logo?[{src:SITE.logo,cap:""}]:[];DBAN=SITE.banner?[{src:SITE.banner,cap:""}]:[];const t=SITE.theme||{},H=SITE.home||{};
+return`<h1>Customize site</h1><form class="f" id="af"><h2>Identity</h2><label>Site title</label><input name="title" value="${esc(SITE.title)}">
+<label>Logo (small image next to the title)</label><div id="logoe"></div><label>Banner image (top of home page)</label><div id="bane"></div>
+<h2>Top bar tabs</h2><div id="nave"></div>
+<h2>Home page</h2><label>Introduction</label><textarea name="tagline">${esc(SITE.tagline)}</textarea><label>Allegation notice (leave empty to hide)</label><textarea name="notice">${esc(SITE.notice)}</textarea>
+<label><input type="checkbox" name="h_recent" ${H.recent?"checked":""}> Show recent cases</label><label><input type="checkbox" name="h_years" ${H.years?"checked":""}> Show browse by year</label><label><input type="checkbox" name="h_locs" ${H.locs?"checked":""}> Show browse by location</label><label><input type="checkbox" name="h_latest" ${H.latest?"checked":""}> Show latest additions</label>
+<h2>About page</h2><textarea name="about" style="min-height:260px">${esc(SITE.about)}</textarea>
+<h2>Look</h2><label><input type="checkbox" name="usetheme" ${t.acc?"checked":""}> Use custom colours and fonts</label>
+<div class="two"><div><label>Accent</label><input type="color" name="acc" value="${t.acc||"#202122"}"></div><div><label>Link colour</label><input type="color" name="link" value="${t.link||"#0645ad"}"></div><div><label>Background</label><input type="color" name="bg" value="${t.bg||"#ffffff"}"></div><div><label>Text colour</label><input type="color" name="fg" value="${t.fg||"#202122"}"></div></div>
+<label>Font</label><select name="font">${[["sans","Clean sans-serif"],["serif","Serif"],["mono","Monospace"]].map(([k,v])=>`<option value="${k}" ${t.font==k?"selected":""}>${v}</option>`).join("")}</select>
+<label>Page width</label><select name="w">${[680,820,980,1160].map(v=>`<option ${(t.w||820)==v?"selected":""}>${v}</option>`).join("")}</select>
+<h2>Advanced</h2><label>Custom CSS (applied site-wide)</label><textarea name="customcss" style="min-height:110px" placeholder="e.g. h1 { color: #7a0000; }">${esc(SITE.customcss||"")}</textarea>
+<h2>Footer</h2><input name="footer" value="${esc(SITE.footer)}">
+<p><button type="button" class="sv">Save everything</button> <a href="#/">Cancel</a></p><p class="mut" id="msg"></p></form>
+<h2>Backup &amp; restore</h2><p><button type="button" id="dlb">Download backup (JSON)</button> <label class="mut">Restore: <input type="file" id="rbb" accept="application/json"></label> <span class="mut" id="bmsg"></span></p>
+<h2>Trash</h2><p class="mut">Deleted cases stay here until you restore or purge them.</p><ul>${DELETED.map(c=>`<li>${esc(c.name)} <span class="mut">(${MON[c.month-1]} ${c.year})</span> <button type="button" data-rst="${c.id}">Restore</button> <button type="button" data-prg="${c.id}">Delete forever</button></li>`).join("")||"<li class=mut>Empty.</li>"}</ul>
+<h2>Pages</h2><p><a href="#/editpage/">+ New page</a></p><ul>${PAGES.map(p=>`<li><a href="#/page/${p.id}">${esc(p.title)}</a> · <a href="#/editpage/${p.id}">edit</a></li>`).join("")||"<li class=mut>No custom pages yet.</li>"}</ul>`}};
+// ---------- data ----------
+const seed=async()=>{if(live&&usingSamples){const b=db.batch();SAMPLES.forEach(c=>{const{id,...r}=c;b.set(db.collection("cases").doc(id),r)});await b.commit()}};
+const tooBig=o=>JSON.stringify(o).length>950000;
+async function write(col,id,o){if(tooBig(o))throw new Error("images too large; remove some or use smaller ones");
+if(live){if(col=="cases")await seed();await db.collection(col).doc(id).set(o)}else{const A=col=="cases"?CASES:PAGES,i=A.findIndex(c=>c.id==id),n={id,...o};i<0?A.push(n):A[i]=n;if(col=="cases")syncDeleted();persist()}}
+async function remove(col,id){
+if(col=="cases"){const c=CASES.find(x=>x.id==id);if(c){const r={...c};delete r.id;await write("cases",id,{...r,del:1,delAt:Date.now()});return}}
+if(live){await db.collection(col).doc(id).delete()}else{PAGES=PAGES.filter(c=>c.id!=id);persist()}}
+function syncDeleted(){DELETED=DELETED.filter(d=>!CASES.some(c=>c.id===d.id));CASES.forEach(c=>{if(c.del)DELETED.push(c)});CASES=CASES.filter(c=>!c.del)}
+async function purge(id){if(live){await db.collection("cases").doc(id).delete()}DELETED=DELETED.filter(c=>c.id!=id);if(!live)persist()}
+async function saveSite(o){const n={...SITE,...o};if(tooBig(n))throw new Error("images too large");SITE=n;if(live)await db.collection("site").doc("main").set(SITE);else persist()}
+// ---------- chrome ----------
+function theme(){const r=document.documentElement.style,t=SITE.theme||{};["--acc","--link","--bg","--fg","--font","--hf","--w"].forEach(k=>r.removeProperty(k));
+if(t.acc){r.setProperty("--acc",t.acc);r.setProperty("--link",t.link);r.setProperty("--bg",t.bg);r.setProperty("--fg",t.fg);r.setProperty("--bd","#8884");r.setProperty("--mut","#888");const f={sans:"system-ui,sans-serif",serif:"Georgia,serif",mono:"ui-monospace,Menlo,monospace"}[t.font]||"system-ui,sans-serif";r.setProperty("--font",f);r.setProperty("--hf",f);r.setProperty("--w",(t.w||820)+"px")}else r.removeProperty("--bd")}
+const href=n=>n.t=="home"?"#/":n.t.startsWith("page:")?"#/page/"+n.t.slice(5):"#/"+n.t;
+function chrome(){theme();
+{let e=$("#ccss");if(!e){e=document.createElement("style");e.id="ccss";document.head.appendChild(e)}e.textContent=SITE.customcss||""}document.title=SITE.title;$("#logo").innerHTML=(SITE.logo?`<img src="${esc(SITE.logo)}" alt="">`:"")+esc(SITE.title);
+$("#nav").innerHTML=SITE.nav.map(n=>{const h=href(n),on=cur==h||(h!="#/"&&cur.startsWith(h+"/"))||(cur.startsWith("#/case")&&n.t=="cases");return`<a href="${h}" class="${on?"on":""}">${esc(n.l)}</a>`}).join("");
+let a="";if(live)a=user?`${esc(user.email)}${canEdit()?" (editor)":" (read-only)"} <button id="so">Sign out</button>`:`<button id="si"><b style="color:#4285f4">G</b> Sign in with Google</button>`;
+else a=localEdit?`Local mode, editing on <button id="lo">Stop</button>`:`<button id="le">Edit (local preview)</button>`;
+if(canEdit())a=`<a href="#/admin">Customize</a> · `+a;$("#auth").innerHTML=a;
+$("#foot").textContent=SITE.footer+(live?"":" · Local mode: edits stay in this browser only.");
+const b=i=>$("#"+i);
+if(b("si"))b("si").onclick=async()=>{try{await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())}catch(e){$("#auth").textContent="Sign-in failed: "+e.message}};
+if(b("so"))b("so").onclick=()=>firebase.auth().signOut();
+if(b("le"))b("le").onclick=()=>{localEdit=true;route()};if(b("lo"))b("lo").onclick=()=>{localEdit=false;route()}}
+function bind(f,fn){const b=f.querySelector("button.sv");b.onclick=()=>{if(f.reportValidity())fn()};f.onkeydown=e=>{if(e.key=="Enter"&&e.target.tagName=="INPUT"&&e.target.type!="file"){e.preventDefault();b.click()}}}
+const twoStep=(el,fn)=>{if(el)el.onclick=async e=>{e.preventDefault();if(!el.dataset.s){el.dataset.s=1;el.textContent="Click again to confirm delete";return}try{await fn()}catch(x){el.textContent="Delete failed: "+x.message}}};
+function go(h){cur=h;try{history.replaceState(null,"",h)}catch(e){}route()}
+document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href^='#']");if(!a)return;e.preventDefault();go(a.getAttribute("href"))});
+function route(){const h=cur.replace(/^#\/?/,"").split("/"),p=h[0]||"home",id=h[1];
+const f={case:()=>R.case(id),edit:()=>R.edit(id),page:()=>R.page(id),editpage:()=>R.editpage(id),search:()=>R.search(decodeURIComponent(id||""))}[p]||(Object.hasOwn(R,p)?R[p]:R.home);
+app.innerHTML=f();scrollTo(0,0);chrome();
+if(p=="locations"){const mf=mapInit(app.querySelector(".mapbox"),{pins:pins(),pick:canEdit()?(la,lo)=>{NEWAT={lat:la,lon:lo};$("#pinfo").innerHTML=`New case at ${la.toFixed(3)}, ${lo.toFixed(3)}: <a href="#/edit/">Create it</a>`}:null,onPin:q=>{const c=q.c;$("#pinfo").innerHTML=`${th(c)}<b>${link(c)}</b><br><span class="mut">${MON[c.month-1]} ${c.year} · ${esc(c.place)} · ${esc(c.status)}</span><br>${esc(c.summary)}`}});
+const chips=app.querySelectorAll(".flt [data-f]"),yr=app.querySelector("#yr"),yrr=app.querySelector("#yrr");
+let fst="all";const ys=years();yr.min=Math.min.apply(null,ys);yr.max=Math.max.apply(null,ys.concat([new Date().getFullYear()]));yr.value=+yr.min;
+const apply=()=>{chips.forEach(b=>b.classList.toggle("on",b.dataset.f===fst));yrr.textContent=yr.value;mf.filter(x=>(fst==="all"||x.st===fst)&&x.yr>=+yr.value)};
+chips.forEach(b=>b.onclick=()=>{fst=b.dataset.f;apply()});yr.oninput=apply;apply()}
+if(p=="case")twoStep($("#del"),async()=>{await remove("cases",id);go("#/cases")});
+const cl=$("#clone");if(cl)cl.onclick=()=>{CLONE=id;go("#/edit/")};
+if(p=="edit"&&canEdit()){imgEd($("#ie"),DRAFT);const F=$("#ef"),I=n=>F.elements[n];
+const msgEl=$("#msg");const DK="nlmw-draft-"+(id||"new");
+try{const d=JSON.parse(localStorage.getItem(DK)||"{}");for(const k in d)if(F.elements[k]&&F.elements[k].type!="file")F.elements[k].value=d[k]}catch(e){}
+F.addEventListener("input",()=>{try{localStorage.setItem(DK,JSON.stringify(Object.fromEntries(new FormData(F))))}catch(e){}});
+const map=mapInit(F.querySelector(".mapbox"),{pick:(la,lo)=>{I("lat").value=la.toFixed(4);I("lon").value=lo.toFixed(4)},marker:EDITING.lat!=null?{lat:+EDITING.lat,lon:+EDITING.lon}:null,pins:[]});
+const mv=()=>{const a=parseFloat(I("lat").value),b=parseFloat(I("lon").value);if(isFinite(a)&&isFinite(b))map.mark(a,b)};I("lat").oninput=I("lon").oninput=mv;
+I("place").onchange=()=>{const g=PLACES.find(x=>x[0].toLowerCase()==I("place").value.trim().toLowerCase());if(g){I("region").value=g[1];I("lat").value=g[2];I("lon").value=g[3];mv()}};
+bind(F,async()=>{const f=Object.fromEntries(new FormData(F)),la=parseFloat(f.lat),lo=parseFloat(f.lon);
+const nid=id||(slug(f.name)+"-"+f.year);
+if(!id&&CASES.some(c=>c.id===nid)){msgEl.textContent="An article with this name and year already exists. Change the name or year.";return}
+const o={name:f.name,year:+f.year,month:+f.month,place:f.place,region:f.region,status:f.status,updated:Date.now(),feat:+!!f.feat,lat:isFinite(la)?la:null,lon:isFinite(lo)?lo:null,summary:f.summary,background:f.background,investigation:f.investigation,legal:f.legal,more:f.more,extra:f.extra,refs:f.refs.split("\n").map(s=>s.trim()).filter(Boolean),images:DRAFT};
+try{await write("cases",nid,o);localStorage.removeItem(DK);go("#/case/"+nid)}catch(x){msgEl.textContent="Save failed: "+x.message}})}
+if(p=="editpage"&&canEdit()){imgEd($("#ie"),DRAFT);const F=$("#pf"),msgEl2=$("#msg"),DPK="nlmw-draft-page-"+(id||"new");
+try{const d=JSON.parse(localStorage.getItem(DPK)||"{}");for(const k in d)if(F.elements[k]&&F.elements[k].type!="file")F.elements[k].value=d[k]}catch(e){}
+F.addEventListener("input",()=>{try{localStorage.setItem(DPK,JSON.stringify(Object.fromEntries(new FormData(F))))}catch(e){}});twoStep($("#delp"),async()=>{await remove("pages",id);SITE.nav=SITE.nav.filter(n=>n.t!="page:"+id);await saveSite({nav:SITE.nav});go("#/admin")});
+bind(F,async()=>{const f=Object.fromEntries(new FormData(F));let nid=id;if(!nid){nid=slug(f.title);while(PAGES.some(x=>x.id==nid))nid+="-2"}
+try{await write("pages",nid,{title:f.title,body:f.body,images:DRAFT});localStorage.removeItem(DPK);if(!id&&f.tab)await saveSite({nav:[...SITE.nav,{l:f.title,t:"page:"+nid}]});go("#/page/"+nid)}catch(x){msgEl2.textContent="Save failed: "+x.message}})}
+if(p=="admin"&&canEdit()){imgEd($("#logoe"),DLOGO,1);imgEd($("#bane"),DBAN,1);navEd($("#nave"),DNAV);const F=$("#af");
+bind(F,async()=>{const f=Object.fromEntries(new FormData(F));try{const nav=[];for(const n of DNAV){let t=n.t;if(t=="__new"){let nid=slug(n.l);while(PAGES.some(x=>x.id==nid))nid+="-2";await write("pages",nid,{title:n.l,body:"This page is empty. Use “Edit this page” to add text and images.",images:[]});t="page:"+nid}nav.push({l:n.l,t})}
+await saveSite({title:f.title,tagline:f.tagline,notice:f.notice,about:f.about,footer:f.footer,logo:DLOGO[0]?DLOGO[0].src:"",banner:DBAN[0]?DBAN[0].src:"",nav,home:{recent:+!!f.h_recent,years:+!!f.h_years,locs:+!!f.h_locs,latest:+!!f.h_latest},customcss:f.customcss||"",theme:f.usetheme?{acc:f.acc,link:f.link,bg:f.bg,fg:f.fg,font:f.font,w:+f.w}:{}});go("#/")}catch(x){$("#msg").textContent="Save failed: "+x.message}})}
+const dlb=$("#dlb");if(dlb)dlb.onclick=()=>{try{const data=JSON.stringify({cases:CASES,pages:PAGES,site:SITE},null,1);const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download="nlwiki-backup.json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);$("#bmsg").textContent="Backup downloaded."}catch(x){$("#bmsg").textContent="Backup failed: "+x.message}};
+const rbb=$("#rbb");app.querySelectorAll("[data-rst]").forEach(b=>b.onclick=async()=>{const c=DELETED.find(x=>x.id==b.dataset.rst);if(!c)return;const r={...c};delete r.id;delete r.del;delete r.delAt;try{await write("cases",c.id,r);route()}catch(x){b.textContent="Failed"}});
+app.querySelectorAll("[data-prg]").forEach(b=>b.onclick=async()=>{await purge(b.dataset.prg);route()});
+if(rbb)rbb.onchange=async()=>{const f2=rbb.files[0];if(!f2)return;try{const d=JSON.parse(await f2.text());if(!Array.isArray(d.cases))throw new Error("not a valid backup file");
+if(live){const b2=db.batch();d.cases.forEach(c=>{const{id,...r}=c;b2.set(db.collection("cases").doc(id),r)});const snap=await db.collection("cases").get();snap.forEach(doc=>{if(!d.cases.some(c=>c.id===doc.id))b2.delete(doc.ref)});await b2.commit();
+ if(d.site)await db.collection("site").doc("main").set(d.site);
+ const ps=await db.collection("pages").get();const pb=db.batch();ps.forEach(doc=>pb.delete(doc.ref));(d.pages||[]).forEach(p=>{const{id,...r}=p;pb.set(db.collection("pages").doc(id),r)});await pb.commit()}
+else{CASES=d.cases.filter(c=>!c.del);DELETED=d.cases.filter(c=>c.del);PAGES=d.pages||[];SITE={...structuredClone(DEF),...d.site};persist()}
+$("#bmsg").textContent="Restore complete.";setTimeout(()=>go("#/"),700)}catch(x){$("#bmsg").textContent="Restore failed: "+x.message}};}
+bind($("#sf"),()=>go("#/search/"+encodeURIComponent($("#q").value)));
+addEventListener("hashchange",()=>{if(location.hash&&location.hash!==cur){cur=location.hash;route()}});
+if(live){CASES=structuredClone(SAMPLES);usingSamples=true;firebase.initializeApp(FIREBASE_CONFIG);db=firebase.firestore();
+firebase.auth().onAuthStateChanged(u=>{user=u;route()});
+db.collection("cases").onSnapshot(s=>{usingSamples=s.empty;const all=s.empty?structuredClone(SAMPLES):s.docs.map(d=>({id:d.id,...d.data()}));CASES=all.filter(c=>!c.del);DELETED=all.filter(c=>c.del);if(!/edit/.test(cur))route()},()=>{});
+db.collection("pages").onSnapshot(s=>{PAGES=s.docs.map(d=>({id:d.id,...d.data()}));if(!/edit|admin/.test(cur))route()},()=>{});
+db.collection("site").doc("main").onSnapshot(d=>{SITE={...structuredClone(DEF),...(d.data()||{})};if(!/edit|admin/.test(cur))route()},()=>{})}
+else loadLocal();
+route();
+</script></body></html>
