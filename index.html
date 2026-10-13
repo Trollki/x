@@ -8,20 +8,10 @@
 GOOGLE LOGIN SETUP (free, ~10 min). Until done, the site runs in "local mode" (edits saved in this browser only).
 1. console.firebase.google.com > Add project > Build > Authentication > Sign-in method > enable Google.
 2. Build > Firestore Database > Create. Rules tab, paste and Publish:
-   rules_version='2'; service cloud.firestore { match /databases/{d}/documents {
-     function F(){return request.auth!=null&&request.auth.token.email_verified==true&&request.auth.token.email=="vadym.litvinov01@gmail.com"}
-     match /cases/{i}{allow read:if true;allow write:if F();}
-     match /pages/{i}{allow read:if true;allow write:if F();}
-     match /site/{i}{allow read:if true;allow write:if F();}
-     match /users/{u}{allow read:if true;allow write:if F();
-       allow create:if request.auth!=null&&request.auth.uid==u&&request.resource.data.role=="member"&&request.resource.data.status=="active"&&request.resource.data.contrib==0;
-       allow update:if request.auth!=null&&request.auth.uid==u&&request.resource.data.diff(resource.data).affectedKeys().hasOnly(["name","bio","photo"])&&request.resource.data.name.size()<=40&&request.resource.data.bio.size()<=500&&request.resource.data.photo.size()<300000;}
-     match /private/{u}{allow read:if F()||(request.auth!=null&&request.auth.uid==u);allow write:if F();allow create:if request.auth!=null&&request.auth.uid==u&&request.resource.data.email==request.auth.token.email;}
-     match /proposals/{i}{allow read:if F()||(request.auth!=null&&request.auth.uid==resource.data.by);allow update,delete:if F();
-       allow create:if request.auth!=null&&request.resource.data.by==request.auth.uid&&request.resource.data.status=="pending"&&get(/databases/$(d)/documents/users/$(request.auth.uid)).data.role=="editor"&&get(/databases/$(d)/documents/users/$(request.auth.uid)).data.status=="active";}
-     match /log/{i}{allow read,write:if F();}
-   } }
-   (These rules also enforce the roles: members and editors can never change their own role.)
+   rules_version='2'; service cloud.firestore { match /databases/{d}/documents { match /{document=**} {
+     allow read: if true;
+     allow write: if request.auth != null && request.auth.token.email_verified == true
+       && request.auth.token.email == "vadym.litvinov01@gmail.com"; } } }
 3. Project settings > Your apps > Web (</>) > copy the config into FIREBASE_CONFIG below.
 4. Authentication > Settings > Authorized domains: add the domain you host on.
 5. Upload this file to Firebase Hosting, Netlify or GitHub Pages.
@@ -70,31 +60,7 @@ h3{font-size:1rem;margin:1em 0 .2em}ul{padding-left:1.2em}
 .pp{min-width:210px;line-height:1.45}
 footer{border-top:1px solid var(--bd);margin-top:40px;padding:12px 0 30px;color:var(--mut);font-size:13px}
 @media(max-width:600px){.info{float:none;width:100%;margin:0 0 12px}.map{height:340px}.f .two{grid-template-columns:1fr}}
-
-:root{--pn:#f6f7f8;--ok:#2e7d32;--wn:#b45f00;--er:#c62828}
-@media(prefers-color-scheme:dark){:root{--pn:#1b1b1b;--ok:#6fcf74;--wn:#f0a040;--er:#ff7b72}}
-.isadm header,.isadm footer{display:none}.isadm main{max-width:none;padding:0}
-.adm{--aa:#3366cc;display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh;background:var(--bg);color:var(--fg);font-size:14px}
-.adm.dk{--bg:#14161a;--fg:#e6e6e6;--mut:#9aa0a6;--bd:#33373d;--link:#8ab4f8;--pn:#1c1f24;--ok:#6fcf74;--wn:#f0a040;--er:#ff7b72}
-.adm.lt{--bg:#fff;--fg:#202122;--mut:#72777d;--bd:#c8ccd1;--link:#0645ad;--pn:#f6f7f8;--ok:#2e7d32;--wn:#b45f00;--er:#c62828}
-.sb{background:var(--pn);border-right:1px solid var(--bd);padding:14px 10px;position:sticky;top:0;height:100vh;overflow:auto}
-.sb a{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;margin:1px 0;color:var(--fg);border-radius:3px}.sb a:hover{background:var(--bd);text-decoration:none}.sb a.on{background:var(--aa);color:#fff}
-.am{padding:8px 26px 40px;min-width:0}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:12px 0}.card{border:1px solid var(--bd);background:var(--pn);padding:10px 12px;border-radius:3px;color:var(--mut)}.card b{display:block;font:600 1.8rem var(--font);color:var(--fg)}
-.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px}.lg{margin:.5em 0}
-.tl{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}.tl input{min-width:220px}
-.tw{overflow-x:auto}.tb{width:100%;border-collapse:collapse}.tb th{text-align:left;color:var(--mut);font-weight:500}.tb td,.tb th{padding:9px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}.cp .tb td,.cp .tb th{padding:3px 8px}.ac{white-space:nowrap}.ac button,.ac .btn{margin-right:2px}
-.btn{display:inline-block;border:1px solid var(--bd);padding:5px 10px;border-radius:2px;color:var(--fg);background:var(--bg)}.btn:hover{text-decoration:none;border-color:var(--aa)}
-.adm button.sv{background:var(--aa);border-color:var(--aa);color:#fff}button.dn{color:var(--er);border-color:var(--er)}
-.chip{display:inline-block;border:1px solid currentColor;border-radius:9px;padding:0 8px;font-size:12px;line-height:18px;color:var(--mut)}.sb .chip{color:inherit}
-.c-pending{color:var(--wn)}.c-approved,.c-active{color:var(--ok)}.c-rejected,.c-disabled{color:var(--er)}.c-founder{color:#8e44ad}.c-editor{color:#2f7fd1}
-.avt{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;object-fit:cover;background:var(--bd);flex:none;vertical-align:middle}
-.df td{white-space:pre-wrap;word-break:break-word;vertical-align:top}.df .o{background:#c6282818}.df .n{background:#2e7d3218}
-.ph{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin:12px 0}.er{color:var(--er)}
-#toast{display:none;position:fixed;right:16px;bottom:16px;z-index:9999;background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:3px;max-width:80vw}#toast.er{background:var(--er);color:#fff}
-@media(max-width:800px){.adm{grid-template-columns:1fr}.sb{position:static;height:auto}.am{padding:8px 14px}}
-</style><base target="_blank">
-</head><body>
+</style></head><body>
 <header><div class="w"><div class="row"><a class="logo" href="#/" id="logo"></a>
 <form class="s" id="sf"><input id="q" placeholder="Search"> <button type="button" class="sv">Search</button></form></div>
 <div class="row"><nav id="nav"></nav><div id="auth" style="font-size:14px"></div></div></div></header>
@@ -105,9 +71,9 @@ footer{border-top:1px solid var(--bd);margin-top:40px;padding:12px 0 30px;color:
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 const ADMIN="vadym.litvinov01@gmail.com";
-const FIREBASE_CONFIG={apiKey:"AIzaSyBsDV2JkcpecnifEPaVRknd9oXdsjsB0H8",authDomain:"nl-murder-wiki.firebaseapp.com",projectId:"nl-murder-wiki",appId:"1:548661516194:web:3372b20a50fdb9177144fb"}; // paste yours here
+const FIREBASE_CONFIG={apiKey:"",authDomain:"",projectId:"",appId:""}; // paste yours here
 const BUILTIN={home:"Home",cases:"Cases",timeline:"Timeline",locations:"Locations (map)",about:"About"};
-const DEF={title:"Newfoundland Murder Wiki",tagline:"A neutral, sourced archive of homicide cases in Newfoundland and Labrador, written with respect for victims and families.",notice:"A charge or arrest is an allegation, not a finding of guilt. Only court outcomes are stated as fact.",footer:"An independent archive of public records.",customcss:"",logo:"",banner:"",theme:{},home:{recent:1,years:1,locs:1,latest:1},
+const DEF={title:"Newfoundland Murder Wiki",tagline:"A neutral, sourced archive of homicide cases in Newfoundland and Labrador, written with respect for victims and families.",notice:"A charge or arrest is an allegation, not a finding of guilt. Only court outcomes are stated as fact.",footer:"An independent archive of public records.",customcss:"",panel:{ranks:{founder:"Founder",editor:"Editor",member:"Member"},sections:{dash:1,queue:1,users:1,activity:1}},logo:"",banner:"",theme:{},home:{recent:1,years:1,locs:1,latest:1},
 nav:[{l:"Home",t:"home"},{l:"Cases",t:"cases"},{l:"Timeline",t:"timeline"},{l:"Locations",t:"locations"},{l:"About",t:"about"}],
 about:`## What this is
 A non-commercial reference documenting homicide cases in Newfoundland and Labrador in a neutral tone.
@@ -128,7 +94,48 @@ Send the article name and a source to the editor. Verified corrections are made 
 Only general locations are published. Minors, witnesses and unrelated private details are omitted. Families may request a review.
 
 ## Editorial policy
-No speculation, no gratuitous detail, and dignity for victims and families.`};
+No speculation, no gratuitous detail, and dignity for victims and families.`},
+panel(){if(!canEdit())return`<h1>Panel</h1><p>Only the ${esc(RANKS().founder||"Founder")} can open the admin panel.</p>`;
+const P=SITE.panel||{},S=P.sections||{},Rk=P.ranks||{};
+const pend=PROPOSALS.filter(x=>x.status==="pending"),done=PROPOSALS.filter(x=>x.status!=="pending").slice(0,15);
+const sc={};CASES.forEach(c=>{const k=SKEY(c.status);sc[k]=(sc[k]||0)+1});
+const mx=Math.max(1,...Object.values(sc));
+const users=Object.entries(USERS);
+return`<h1>Admin Panel</h1>
+${S.dash?`<h2>Dashboard</h2><p><b>${CASES.length}</b> articles · <b>${PAGES.length}</b> pages · <b>${users.length}</b> signed-in users · <b>${pend.length}</b> pending proposals</p>
+<h3>Cases by status</h3>${Object.keys(SCOL).map(k=>sc[k]?`<div class="mut" style="margin:2px 0">${k} <span style="display:inline-block;background:${SCOL[k]};height:10px;width:${20+Math.round(sc[k]/mx*160)}px;border-radius:3px;vertical-align:middle"></span> ${sc[k]}</div>`:"").join("")}`:""}
+${S.queue?`<h2>Proposal queue (${pend.length} pending)</h2>${pend.map(pr=>`<div style="border:1px solid var(--bd);padding:10px 14px;margin:10px 0">
+<p><span class="bdg" style="background:${pr.type==="delete"?"#c62828":pr.type==="new"?"#2e7d32":"#1565c0"}">${pr.type}</span> <b>${esc(pr.byName||pr.by||"unknown")}</b> <span class="mut">${new Date(pr.at).toLocaleString()}</span></p>
+${diffHTML(pr)}
+<p><button type="button" class="sv" data-ap="${pr.id}">Approve</button> <button type="button" data-rj="${pr.id}">Reject</button> <input placeholder="Reason (optional)" data-rsn="${pr.id}" style="width:190px"> <span class="mut" data-rjm="${pr.id}"></span></p>
+</div>`).join("")||"<p class=mut>No pending proposals.</p>"}
+<h3>Recently decided</h3>${done.map(pr=>`<p class="mut">${pr.status==="approved"?"✅":"❌"} ${esc(pr.byName||"")}'s ${pr.type} on ${pr.col} ${pr.status==="approved"?"was approved":`was rejected${pr.reason?": "+esc(pr.reason):""}`} · ${new Date(pr.reviewAt||pr.at).toLocaleDateString()}</p>`).join("")||""}`:""}
+${S.users?`<h2>Users (${users.length})</h2><p class="mut">Someone must log in once before they appear here.</p>
+${users.map(([uid,u])=>`<div style="border:1px solid var(--bd);padding:8px 14px;margin:8px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+${u.photo?`<img src="${esc(u.photo)}" style="width:34px;height:34px;border-radius:50%" alt="">`:""}
+<div><b><a href="#/user/${uid}">${esc(u.name||u.email||"user")}</a></b> <span class="mut">${esc(u.email||"")} · joined ${u.since?new Date(u.since).toLocaleDateString():"?"}</span></div>
+<div style="margin-left:auto">${u.email&&(u.email||"").toLowerCase()===ADMIN?`<span class="bdg" style="background:#000">${esc(Rk.founder||"Founder")}</span>`:u.role==="editor"?`<span class="bdg" style="background:#1565c0">${esc(Rk.editor||"Editor")}</span> <button type="button" data-dem="${uid}">Demote</button>`:`<span class="bdg" style="background:#777">${esc(Rk.member||"Member")}</span> <button type="button" data-pro="${uid}">Make editor</button>`} ${u.email&&(u.email||"").toLowerCase()!==ADMIN?`<button type="button" data-urm="${uid}">Remove</button>`:""}</div>
+</div>`).join("")||"<p class=mut>No users yet.</p>"}`:""}
+${S.activity?`<h2>Activity</h2>${PROPOSALS.slice(0,20).map(pr=>`<p class="mut">${new Date(pr.at).toLocaleString()} — <b>${esc(pr.byName||"someone")}</b> proposed a ${pr.type} on ${pr.col}${pr.reviewAt?` · ${pr.status}`:" · pending"}</p>`).join("")||"<p class=mut>No activity yet.</p>"}`:""}
+<h2>Panel settings</h2><form class="f" id="pform"><label>Founder rank label</label><input name="r_founder" value="${esc(Rk.founder||"Founder")}"><label>Editor rank label</label><input name="r_editor" value="${esc(Rk.editor||"Editor")}"><label>Member rank label</label><input name="r_member" value="${esc(Rk.member||"Member")}">
+<label><input type="checkbox" name="s_dash" ${S.dash?"checked":""}> Show dashboard</label><label><input type="checkbox" name="s_queue" ${S.queue?"checked":""}> Show proposal queue</label><label><input type="checkbox" name="s_users" ${S.users?"checked":""}> Show users</label><label><input type="checkbox" name="s_activity" ${S.activity?"checked":""}> Show activity feed</label>
+<p><button type="button" class="sv">Save panel settings</button> <span class="mut" id="pmsg"></span></p></form>`},
+profile(){if(live&&!user)return`<h1>Profile</h1><p>Sign in with Google to view your profile.</p>`;
+const me=live?(USERS[user.uid]||{name:user.displayName,email:user.email,photo:user.photoURL||"",role:"member",since:Date.now(),bio:""}):{name:"Local Founder",email:"(local preview)",role:"founder",since:Date.now(),bio:"",photo:""};
+const mine=PROPOSALS.filter(pr=>pr.by===(user?user.uid:"local"));
+const canEditProfile=canEdit()||canPropose();
+return`<h1>Profile</h1>
+<div style="border:1px solid var(--bd);padding:12px 16px;margin:10px 0">${me.photo?`<img src="${esc(me.photo)}" style="width:56px;height:56px;border-radius:50%;vertical-align:middle;margin-right:10px" alt="">`:""} <b style="font-size:1.15em">${esc(me.name||"")}</b> <span class="bdg" style="background:${myRank()==="founder"?"#000":myRank()==="editor"?"#1565c0":"#777"}">${esc(myLabel())}</span>
+<p class="mut">${esc(me.email||"")} · joined ${me.since?new Date(me.since).toLocaleDateString():"?"}</p>
+<p>${esc(me.bio||"")}</p></div>
+${canEditProfile?`<form class="f" id="meform"><label>Display name</label><input name="name" value="${esc(me.name||"")}"><label>Bio</label><textarea name="bio">${esc(me.bio||"")}</textarea><p><button type="button" class="sv">Save profile</button> <span class="mut" id="memsg"></span></p></form>`:`<p class="mut">Members can't edit their profile. Get promoted to ${esc(RANKS().editor||"Editor")} to customize it.</p>`}
+<h2>My proposals</h2>${mine.map(pr=>`<p>${pr.status==="pending"?"⏳":pr.status==="approved"?"✅":"❌"} <span class="bdg" style="background:${pr.type==="delete"?"#c62828":"#1565c0"}">${pr.type}</span> on ${pr.col} — <b>${pr.status}</b>${pr.reason&&pr.status==="rejected"?`<br><span class="mut">Reason: ${esc(pr.reason)}</span>`:""} <span class="mut">· ${new Date(pr.at).toLocaleString()}</span></p>`).join("")||"<p class=mut>No proposals yet.</p>"}`},
+user(id){if(!live)return`<h1>Users</h1><p class=mut>User profiles are available in the live version.</p>`;
+const u=USERS[id];if(!u)return`<h1>No such user</h1>`;
+const rank=u.email&&(u.email||"").toLowerCase()===ADMIN?"founder":u.role||"member";
+return`<h1>${esc(u.name||u.email||"User")}</h1>${u.photo?`<img src="${esc(u.photo)}" style="width:56px;height:56px;border-radius:50%" alt="">`:""} <span class="bdg" style="background:${rank==="founder"?"#000":rank==="editor"?"#1565c0":"#777"}">${esc(RANKS()[rank]||rank)}</span>
+<p class="mut">${esc(u.email||"")} · joined ${u.since?new Date(u.since).toLocaleDateString():"?"}</p>
+<p>${esc(u.bio||"")}</p>`}};
 const S=(id,name,year,month,place,region,status,lat,lon,summary)=>({id,name,year,month,place,region,status,lat,lon,summary,background:"Sample background, as reported by reliable sources.",investigation:"Sample police and court steps, attributed to their source.",legal:"A charge is an allegation, not a finding of guilt.",more:"",extra:"",images:[],refs:["Source one","Source two"]});
 const SAMPLES=[S("case-a","Case A (sample)",2026,3,"St. John's","Avalon Peninsula","Charged",47.56,-52.71,"Placeholder text showing the article layout."),S("case-b","Case B (sample)",2026,1,"Corner Brook","West Coast","Under investigation",48.95,-57.95,"Placeholder for a case under investigation."),S("case-c","Case C (sample)",2025,11,"Gander","Central","Convicted",48.96,-54.61,"Placeholder for a concluded case.")];
 const PLACES=[["St. John's","Avalon Peninsula",47.56,-52.71],["Mount Pearl","Avalon Peninsula",47.52,-52.81],["Paradise","Avalon Peninsula",47.53,-52.87],["Conception Bay South","Avalon Peninsula",47.5,-52.99],["Carbonear","Avalon Peninsula",47.74,-53.22],["Harbour Grace","Avalon Peninsula",47.7,-53.22],["Bay Roberts","Avalon Peninsula",47.6,-53.26],["Placentia","Avalon Peninsula",47.24,-53.97],["Marystown","Burin Peninsula",47.17,-55.15],["Clarenville","Eastern",48.16,-53.96],["Bonavista","Eastern",48.65,-53.11],["Gander","Central",48.96,-54.61],["Grand Falls-Windsor","Central",48.93,-55.65],["Lewisporte","Central",49.25,-55.07],["Twillingate","Central",49.65,-54.76],["Fogo","Central",49.72,-54.28],["Corner Brook","West Coast",48.95,-57.95],["Deer Lake","West Coast",49.17,-57.43],["Stephenville","West Coast",48.55,-58.58],["Channel-Port aux Basques","West Coast",47.57,-59.14],["St. Anthony","Northern Peninsula",51.36,-55.58],["Happy Valley-Goose Bay","Labrador",53.3,-60.33],["Labrador City","Labrador",52.94,-66.91],["Wabush","Labrador",52.9,-66.87],["Nain","Labrador",56.54,-61.69]];
@@ -137,11 +144,16 @@ const MON=["January","February","March","April","May","June","July","August","Se
 const $=s=>document.querySelector(s),app=$("#app");
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const live=!!FIREBASE_CONFIG.apiKey;
-let CASES=[],DELETED=[],PAGES=[],SITE=structuredClone(DEF),db=null,user=null,localEdit=false,usingSamples=false,EDITING=null,NEWAT=null,CLONE=null,cur=location.hash||"#/";
+let CASES=[],DELETED=[],PAGES=[],SITE=structuredClone(DEF),db=null,user=null,localEdit=false,usingSamples=false,EDITING=null,NEWAT=null,CLONE=null,USERS={},PROPOSALS=[],cur=location.hash||"#/";
 const LS="nlmw2";
-function persist(){if(live)return;try{localStorage.setItem(LS,JSON.stringify({cases:CASES.concat(DELETED),pages:PAGES,site:SITE}))}catch(e){$("#foot").textContent="Browser storage is full or blocked: changes won't survive closing this tab. Try smaller images."}}
-function loadLocal(){try{const v=JSON.parse(localStorage.getItem(LS));if(v){const all=v.cases||[];CASES=all.filter(c=>!c.del);DELETED=all.filter(c=>c.del);PAGES=v.pages||[];SITE={...structuredClone(DEF),...v.site};return}}catch(e){}CASES=structuredClone(SAMPLES);DELETED=[]}
+function persist(){if(live)return;try{localStorage.setItem(LS,JSON.stringify({cases:CASES.concat(DELETED),pages:PAGES,site:SITE,proposals:PROPOSALS}))}catch(e){$("#foot").textContent="Browser storage is full or blocked: changes won't survive closing this tab. Try smaller images."}}
+function loadLocal(){try{const v=JSON.parse(localStorage.getItem(LS));if(v){const all=v.cases||[];CASES=all.filter(c=>!c.del);DELETED=all.filter(c=>c.del);PAGES=v.pages||[];PROPOSALS=v.proposals||[{id:"p1",type:"edit",col:"cases",target:"case-a",by:"demo",byName:"Demo Editor",at:Date.now()-86400000,status:"pending",data:{...SAMPLES[0],name:"Case A (sample) [proposed rename]"}},{id:"p2",type:"new",col:"cases",target:null,by:"demo",byName:"Demo Editor",at:Date.now()-3600000,status:"pending",data:{name:"Proposed New Case",year:2026,month:9,place:"Bonavista",region:"Eastern",status:"Unsolved",lat:48.65,lon:-53.11,summary:"A brand new article awaiting your approval.",refs:[]}}];SITE={...structuredClone(DEF),...v.site};return}}catch(e){}CASES=structuredClone(SAMPLES);DELETED=[]}
 const canEdit=()=>live?(!!user&&(user.email||"").toLowerCase()===ADMIN&&user.emailVerified):localEdit;
+const isEditor=()=>!!user&&live&&((USERS[user.uid]||{}).role==="editor");
+const canPropose=()=>isEditor();
+const RANKS=()=>((SITE&&SITE.panel||{}).ranks)||{founder:"Founder",editor:"Editor",member:"Member"};
+const myRank=()=>canEdit()?"founder":isEditor()?"editor":"member";
+const myLabel=()=>RANKS()[myRank()]||myRank();
 const sorted=()=>[...CASES].sort((a,b)=>b.year-a.year||b.month-a.month);
 const link=c=>`<a href="#/case/${c.id}">${esc(c.name)}</a>`;
 const years=()=>[...new Set(CASES.map(c=>c.year))].sort((a,b)=>b-a);
@@ -209,31 +221,32 @@ box.querySelector("[data-add]").onclick=()=>{arr.push({l:"New tab",t:"__new"});d
 let DRAFT=[],DNAV=[],DLOGO=[],DBAN=[];
 // ---------- pages ----------
 const R={
-home(){const H=SITE.home||{};return`<h1>${esc(SITE.title)}</h1>${EL("#/admin/settings")}${SITE.banner?`<img class="banner" src="${esc(SITE.banner)}" alt="">`:""}${rich(SITE.tagline)}<p class="mut">${CASES.length} articles.</p>${NOTE()}
+home(){const H=SITE.home||{};return`<h1>${esc(SITE.title)}</h1>${EL("#/admin")}${SITE.banner?`<img class="banner" src="${esc(SITE.banner)}" alt="">`:""}${rich(SITE.tagline)}<p class="mut">${CASES.length} articles.</p>${NOTE()}
 ${(()=>{const F=CASES.filter(c=>c.feat);return F.length?`<h2>Featured cases</h2><ul>${F.map(c=>`<li>${th(c)}${link(c)} <span class="mut">${MON[c.month-1]} ${c.year}, ${esc(c.place)}</span></li>`).join("")}</ul>`:""})()}
 ${H.recent?`<h2>Recent cases</h2><ul>${sorted().slice(0,5).map(c=>`<li>${th(c)}${link(c)} <span class="mut">${MON[c.month-1]} ${c.year}, ${esc(c.place)}</span></li>`).join("")}</ul>`:""}
 ${H.years?`<h2>Browse by year</h2><p>${years().map(y=>`<a href="#/cases">${y}</a>`).join(" · ")}</p>`:""}
 ${H.locs?`<h2>Browse by location</h2><p>${places().map(p=>`<a href="#/locations">${esc(p)}</a>`).join(" · ")}</p>`:""}
 ${H.latest?`<h2>Latest additions</h2><ul>${[...CASES].reverse().slice(0,3).map(c=>`<li>${link(c)}</li>`).join("")}</ul>`:""}`},
-cases(){return`<h1>Cases</h1>${canEdit()||canProp()?`<p><a href="#/edit/">+ New article</a></p>`:""}${byYear(c=>`<li>${th(c)}${link(c)} <span class="mut">${esc(c.place)}, ${esc(c.status)}</span></li>`)}`},
+cases(){return`<h1>Cases</h1>${canEdit()?`<p><a href="#/edit/">+ New article</a></p>`:canPropose()?`<p><a href="#/edit/">+ Propose new article</a></p>`:""}${byYear(c=>`<li>${th(c)}${link(c)} <span class="mut">${esc(c.place)}, ${esc(c.status)}</span></li>`)}`},
 timeline(){return`<h1>Timeline</h1>${GEN()}${byYear(c=>`<li>${MON[c.month-1]}: ${link(c)}</li>`)}`},
 locations(){const rg=[...new Set(CASES.map(c=>c.region))].sort();return`<h1>Locations</h1><p class="mut">Cases are shown by general area. Exact addresses are never published.</p>
 <p class="flt">Show: <button type="button" data-f="all" class="on">All</button> <button type="button" data-f="unsolved">Unsolved</button> <button type="button" data-f="charged">Charged</button> <button type="button" data-f="convicted">Convicted</button> <button type="button" data-f="acquitted">Acquitted</button> <button type="button" data-f="other">Other</button> <span class="mut">&middot; from year</span> <input type="range" id="yr" style="width:160px;vertical-align:middle"> <b id="yrr"></b></p>${mapHTML()}${LEG}<div id="pinfo" class="note">${canEdit()?"Click a pin to open it, or click empty land to start a new case at that spot.":"Click a pin to see the case."}</div>`+rg.map(r=>`<h2>${esc(r)}</h2>`+places().filter(p=>CASES.some(c=>c.place==p&&c.region==r)).map(p=>`<h3>${esc(p)}</h3><ul>${sorted().filter(c=>c.place==p).map(c=>`<li>${link(c)} (${c.year})</li>`).join("")}</ul>`).join("")).join("")},
 search(q){q=(q||"").trim();const t=q.toLowerCase().split(/\s+/).filter(Boolean);const m=x=>t.every(w=>x.toLowerCase().includes(w));
-const a=t.length?CASES.filter(c=>m([c.name,c.year,MON[c.month-1],c.place,c.region,c.status,c.summary,c.background,c.investigation,c.legal,c.more,c.extra].join(" "))):[],b=t.length?PAGES.filter(p=>(!p.draft||canEdit())&&m(p.title+" "+p.body)):[];
+const a=t.length?CASES.filter(c=>m([c.name,c.year,MON[c.month-1],c.place,c.region,c.status,c.summary,c.background,c.investigation,c.legal,c.more,c.extra].join(" "))):[],b=t.length?PAGES.filter(p=>m(p.title+" "+p.body)):[];
 return`<h1>Search</h1>`+(q?`<p class="mut">${a.length+b.length} result(s) for “${esc(q)}”</p>`+a.map(c=>`<p>${link(c)}<br><span class="mut">${MON[c.month-1]} ${c.year}, ${esc(c.place)}, ${esc(c.status)}</span><br>${esc(c.summary)}</p>`).join("")+b.map(p=>`<p><a href="#/page/${p.id}">${esc(p.title)}</a><br><span class="mut">Page</span></p>`).join(""):`<p class="mut">Search names, dates, locations, pages and article text.</p>`)},
 case(id){const c=CASES.find(x=>x.id==id);if(!c)return`<h1>No such article</h1>`;const ex=(c.extra||"").split("\n").filter(l=>l.includes(":")).map(l=>{const i=l.indexOf(":");return`<tr><th>${esc(l.slice(0,i).trim())}</th><td>${esc(l.slice(i+1).trim())}</td></tr>`}).join("");
 const body=`<p>${esc(c.summary)}</p>`+[["Background",c.background],["Investigation",c.investigation],["Legal proceedings",c.legal]].map(([h,t])=>t?`<h2>${h}</h2><p>${esc(t)}</p>`:"").join("");
-return`<h1>${esc(c.name)}</h1>${canEdit()?`<p class="mut"><a href="#/edit/${c.id}">Edit</a> · <a id="clone">Clone</a> · <a id="del">Delete</a></p>`:canProp()?`<p class="mut"><a href="#/edit/${c.id}">Propose edit</a> · <a id="del">Propose deletion</a></p>`:""}${NOTE()}
+return`<h1>${esc(c.name)}</h1>${canEdit()?`<p class="mut"><a href="#/edit/${c.id}">Edit</a> · <a id="clone">Clone</a> · <a id="del">Delete</a></p>`:canPropose()?`<p class="mut"><a href="#/edit/${c.id}">Propose edit</a> · <a id="del">Propose deletion</a></p>`:""}${NOTE()}
 <table class="info"><caption>${esc(c.name)}</caption>${c.images&&c.images[0]?`<tr><td colspan="2" style="padding:0"><img src="${esc(c.images[0].src)}" alt="${esc(c.images[0].cap)}"></td></tr>`:""}<tr><th>Date</th><td>${MON[c.month-1]} ${c.year}</td></tr><tr><th>Location</th><td>${esc(c.place)}</td></tr><tr><th>Region</th><td>${esc(c.region)}</td></tr><tr><th>Status</th><td>${esc(c.status)}</td></tr>${ex}${c.updated?`<tr><th>Updated</th><td>${new Date(c.updated).toLocaleDateString()}</td></tr>`:""}</table>
 ${body}${rich(c.more,c.images||[],1)}<h2>References</h2><ol>${(c.refs||[]).map(r=>`<li>${esc(r)}</li>`).join("")}</ol>
 <div class="bar" style="clear:both">Categories: <a href="#/cases">${c.year}</a> · <a href="#/locations">${esc(c.region)}</a> · ${esc(c.status)}</div>`},
-edit(id){if(!canEdit()&&!canProp())return`<h1>Edit</h1><p>Sign in with the editor's Google account to edit.</p>`;
+edit(id){if(!canEdit()&&!canPropose())return`<h1>Edit</h1><p>Only the Founder and Editors can contribute. Sign in with Google.</p>`;
+const PROP=!canEdit();
 let c=CASES.find(x=>x.id==id)||{year:new Date().getFullYear(),month:1,refs:[],images:[],lat:NEWAT?NEWAT.lat:null,lon:NEWAT?NEWAT.lon:null};NEWAT=null;
 if(CLONE){const o=CASES.find(x=>x.id==CLONE);CLONE=null;if(o)c={...structuredClone(o),name:o.name+" (copy)",images:structuredClone(o.images||[])}}
 EDITING=c;DRAFT=structuredClone(c.images||[]);
 const T=(k,l,r)=>`<label>${l}</label><textarea name="${k}" ${r||""}>${esc(c[k])}</textarea>`;
-return`<h1>${c.id?"Edit":"New"} article</h1>${PN()}<form class="f" id="ef"><label>Name</label><input name="name" required value="${esc(c.name)}">
+return`<h1>${c.id?"Edit":"New"} article</h1>${PROP?`<p class="note">You are submitting a proposal: the Founder must approve it before it goes live.</p>`:""}<form class="f" id="ef"><label>Name</label><input name="name" required value="${esc(c.name)}">
 <div class="two"><div><label>Year</label><input name="year" type="number" required value="${c.year}"></div><div><label>Month</label><select name="month">${MON.map((m,i)=>`<option value="${i+1}" ${c.month==i+1?"selected":""}>${m}</option>`).join("")}</select></div></div>
 <div class="two"><div><label>Community (pick from list to auto-place on the map)</label><input name="place" list="pl" required value="${esc(c.place)}"><datalist id="pl">${PLACES.map(p=>`<option value="${esc(p[0])}">`).join("")}</datalist></div><div><label>Region</label><input name="region" required value="${esc(c.region)}"></div></div>
 <label>Status (e.g. Unsolved, Charged, Convicted, Acquitted)</label><input name="status" required value="${esc(c.status)}">
@@ -242,15 +255,16 @@ return`<h1>${c.id?"Edit":"New"} article</h1>${PN()}<form class="f" id="ef"><labe
 ${T("more","More sections (## Heading, - bullets, **bold**, [img 1] places picture 1 here)")}${T("extra","Extra infobox rows (one per line, Label: value)")}
 <label>Images (first one appears in the infobox)</label><div id="ie"></div>
 <label>References (one per line)</label><textarea name="refs">${esc((c.refs||[]).join("\n"))}</textarea>
-<p><button type="button" class="sv">${canEdit()?"Save":"Submit proposal"}</button> <a href="#/cases">Cancel</a></p><p class="mut" id="msg"></p></form>`},
-page(id){const p=PAGES.find(x=>x.id==id);if(!p||(p.draft&&!canEdit()))return`<h1>No such page</h1>`;return`<h1>${esc(p.title)}</h1>${canEdit()||canProp()?`<p class="mut">${p.draft?"Draft (hidden from visitors) · ":""}<a href="#/editpage/${p.id}">${canEdit()?"[Edit this page]":"[Propose edit]"}</a></p>`:""}${rich(p.body,p.images||[])}`},
-editpage(id){if(!canEdit()&&!canProp())return`<h1>Edit</h1><p>Sign in with the editor's Google account to edit.</p>`;const p=PAGES.find(x=>x.id==id)||{title:"",body:"",images:[]};EDITING=p;DRAFT=structuredClone(p.images||[]);
-return`<h1>${p.id?"Edit":"New"} page</h1>${PN()}<form class="f" id="pf"><label>Title</label><input name="title" required value="${esc(p.title)}">${p.id?`<p class="mut">Page address: #/page/${esc(p.id)}</p>`:`<label>Page address (lowercase letters, numbers and dashes; leave blank to build it from the title)</label><input name="slug" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="60">`}
+<p><button type="button" class="sv">Save</button> <a href="#/cases">Cancel</a></p><p class="mut" id="msg"></p></form>`},
+page(id){const p=PAGES.find(x=>x.id==id);if(!p)return`<h1>No such page</h1>`;return`<h1>${esc(p.title)}</h1>${canEdit()?`<p class="mut"><a href="#/editpage/${p.id}">[Edit this page]</a></p>`:""}${rich(p.body,p.images||[])}`},
+editpage(id){if(!canEdit()&&!canPropose())return`<h1>Edit</h1><p>Only the Founder and Editors can contribute. Sign in with Google.</p>`;
+const PROP=!canEdit();const p=PAGES.find(x=>x.id==id)||{title:"",body:"",images:[]};EDITING=p;DRAFT=structuredClone(p.images||[]);
+return`<h1>${p.id?"Edit":"New"} page</h1>${PROP?`<p class="note">You are submitting a proposal: the Founder must approve it before it goes live.</p>`:""}<form class="f" id="pf"><label>Title</label><input name="title" required value="${esc(p.title)}">
 <label>Text (## Heading, - bullets, **bold**, *italic*, [text](https://link), [img 1] places picture 1 here)</label><textarea name="body" style="min-height:240px">${esc(p.body)}</textarea>
-<label>Images</label><div id="ie"></div>${p.id||!canEdit()?"":`<label><input type="checkbox" name="tab" checked> Also add as a tab in the top bar</label>`}${canEdit()?`<label><input type="checkbox" name="pub" ${p.draft?"":"checked"}> Published (visible to everyone)</label>`:""}
-<p><button type="button" class="sv">${canEdit()?"Save":"Submit proposal"}</button> ${p.id?`<a id="delp">${canEdit()?"Delete page":"Propose deletion"}</a> · `:""}<a href="${canEdit()?"#/admin/pages":"#/"}">Cancel</a></p><p class="mut" id="msg"></p></form>`},
-about(){return`<h1>About</h1>${EL("#/admin/settings")}${rich(SITE.about)}`},
-settings(){if(!canEdit())return`<h1>Customize</h1><p>Sign in with the editor's Google account to customize the site.</p>`;
+<label>Images</label><div id="ie"></div>${p.id?"":`<label><input type="checkbox" name="tab" checked> Also add as a tab in the top bar</label>`}
+<p><button type="button" class="sv">Save</button> ${p.id?`<a id="delp">Delete page</a> · `:""}<a href="#/admin">Cancel</a></p><p class="mut" id="msg"></p></form>`},
+about(){return`<h1>About</h1>${EL("#/admin")}${rich(SITE.about)}`},
+admin(){if(!canEdit())return`<h1>Customize</h1><p>Sign in with the editor's Google account to customize the site.</p>`;
 DNAV=structuredClone(SITE.nav);DLOGO=SITE.logo?[{src:SITE.logo,cap:""}]:[];DBAN=SITE.banner?[{src:SITE.banner,cap:""}]:[];const t=SITE.theme||{},H=SITE.home||{};
 return`<h1>Customize site</h1><form class="f" id="af"><h2>Identity</h2><label>Site title</label><input name="title" value="${esc(SITE.title)}">
 <label>Logo (small image next to the title)</label><div id="logoe"></div><label>Banner image (top of home page)</label><div id="bane"></div>
@@ -264,7 +278,10 @@ return`<h1>Customize site</h1><form class="f" id="af"><h2>Identity</h2><label>Si
 <label>Page width</label><select name="w">${[680,820,980,1160].map(v=>`<option ${(t.w||820)==v?"selected":""}>${v}</option>`).join("")}</select>
 <h2>Advanced</h2><label>Custom CSS (applied site-wide)</label><textarea name="customcss" style="min-height:110px" placeholder="e.g. h1 { color: #7a0000; }">${esc(SITE.customcss||"")}</textarea>
 <h2>Footer</h2><input name="footer" value="${esc(SITE.footer)}">
-<p><button type="button" class="sv">Save everything</button> <a href="#/">Cancel</a></p><p class="mut" id="msg"></p></form>`}};
+<p><button type="button" class="sv">Save everything</button> <a href="#/">Cancel</a></p><p class="mut" id="msg"></p></form>
+<h2>Backup &amp; restore</h2><p><button type="button" id="dlb">Download backup (JSON)</button> <label class="mut">Restore: <input type="file" id="rbb" accept="application/json"></label> <span class="mut" id="bmsg"></span></p>
+<h2>Trash</h2><p class="mut">Deleted cases stay here until you restore or purge them.</p><ul>${DELETED.map(c=>`<li>${esc(c.name)} <span class="mut">(${MON[c.month-1]} ${c.year})</span> <button type="button" data-rst="${c.id}">Restore</button> <button type="button" data-prg="${c.id}">Delete forever</button></li>`).join("")||"<li class=mut>Empty.</li>"}</ul>
+<h2>Pages</h2><p><a href="#/editpage/">+ New page</a></p><ul>${PAGES.map(p=>`<li><a href="#/page/${p.id}">${esc(p.title)}</a> · <a href="#/editpage/${p.id}">edit</a></li>`).join("")||"<li class=mut>No custom pages yet.</li>"}</ul>`}};
 // ---------- data ----------
 const seed=async()=>{if(live&&usingSamples){const b=db.batch();SAMPLES.forEach(c=>{const{id,...r}=c;b.set(db.collection("cases").doc(id),r)});await b.commit()}};
 const tooBig=o=>JSON.stringify(o).length>950000;
@@ -272,115 +289,44 @@ async function write(col,id,o){if(tooBig(o))throw new Error("images too large; r
 if(live){if(col=="cases")await seed();await db.collection(col).doc(id).set(o)}else{const A=col=="cases"?CASES:PAGES,i=A.findIndex(c=>c.id==id),n={id,...o};i<0?A.push(n):A[i]=n;if(col=="cases")syncDeleted();persist()}}
 async function remove(col,id){
 if(col=="cases"){const c=CASES.find(x=>x.id==id);if(c){const r={...c};delete r.id;await write("cases",id,{...r,del:1,delAt:Date.now()});return}}
-if(live&&col=="pages"){const p=PAGES.find(x=>x.id==id);if(p){const r={...p};delete r.id;await write("pages",id,{...r,del:1,delAt:Date.now()});return}}
 if(live){await db.collection(col).doc(id).delete()}else{PAGES=PAGES.filter(c=>c.id!=id);persist()}}
 function syncDeleted(){DELETED=DELETED.filter(d=>!CASES.some(c=>c.id===d.id));CASES.forEach(c=>{if(c.del)DELETED.push(c)});CASES=CASES.filter(c=>!c.del)}
 async function purge(id){if(live){await db.collection("cases").doc(id).delete()}DELETED=DELETED.filter(c=>c.id!=id);if(!live)persist()}
+async function propose(o){if(tooBig(o.data||{}))throw new Error("content too large");
+if(live){await db.collection("proposals").add({...o,at:Date.now(),status:"pending"})}
+else{PROPOSALS.unshift({id:"p"+Date.now(),by:"local",byName:"Local preview",...o,at:Date.now(),status:"pending"});persist()}}
+async function setProp(id,patch){if(live){await db.collection("proposals").doc(id).update(patch)}
+else{PROPOSALS=PROPOSALS.map(p=>p.id===id?{...p,...patch}:p);persist()}}
+async function approveProp(pr){
+if(pr.col==="cases"||pr.col==="pages"){
+if(pr.type==="delete"){if(live)await db.collection(pr.col).doc(pr.target).delete();else{if(pr.col==="cases"){CASES=CASES.filter(c=>c.id!=pr.target);DELETED=DELETED.filter(c=>c.id!=pr.target)}else PAGES=PAGES.filter(c=>c.id!=pr.target);persist()}}
+else await write(pr.col,pr.target,pr.data)}
+await setProp(pr.id,{status:"approved",reviewAt:Date.now()})}
+const PFIELDS=["name","title","year","month","place","region","status","summary","background","investigation","legal","more","extra","refs","body"];
+function diffHTML(pr){
+if(pr.type==="delete"){const t=(pr.col==="cases"?CASES:PAGES).find(x=>x.id===pr.target);return `<p class="note" style="border-color:#c62828">Proposes to <b>delete</b> “${esc(t?(t.name||t.title):pr.target)}”.</p>`}
+if(pr.type==="new")return `<p><b>New ${pr.col==="cases"?"article":"page"}:</b> ${esc(pr.data.name||pr.data.title||"")}<br><span class="mut">${esc((pr.data.summary||pr.data.body||"").slice(0,140))}</span></p>`;
+const oldD=(pr.col==="cases"?CASES:PAGES).find(x=>x.id===pr.target);
+if(!oldD)return `<p class="mut">Target no longer exists.</p>`;
+const rows=PFIELDS.filter(k=>k in oldD||k in pr.data).filter(k=>JSON.stringify(oldD[k])!==JSON.stringify(pr.data[k])).map(k=>`<tr><th>${esc(k)}</th><td>${esc(String(oldD[k]??"")).slice(0,90)}</td><td class="mut">→</td><td><b>${esc(String(pr.data[k]??"")).slice(0,90)}</b></td></tr>`);
+return rows.length?`<table class="info" style="float:none;width:100%;margin:8px 0">${rows.join("")}</table>`:`<p class="mut">No field changes detected.</p>`}
 async function saveSite(o){const n={...SITE,...o};if(tooBig(n))throw new Error("images too large");SITE=n;if(live)await db.collection("site").doc("main").set(SITE);else persist()}
-// ---------- accounts, roles, proposals, admin panel ----------
-let ME=null,USERS=[],PRIV={},PROPS=[],LOG=[],DPAGES=[],unsub=[],AP={},AS={q:"",st:"",so:"new",rl:"",pu:"",sec:""};
-try{AP=JSON.parse(localStorage.getItem("nlmw-adm"))||{}}catch(e){}
-const rr=()=>{if(/^#\/(admin|profile|proposal)/.test(cur)&&!/edit|settings/.test(cur)&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))route()};
-const rt=()=>/edit/.test(cur)?chrome():route();
-const role=()=>!user?"guest":canEdit()?"founder":ME&&ME.status!="disabled"&&ME.role=="editor"?"editor":"member";
-const canProp=()=>role()=="editor";
-const fdt=t=>t?new Date(t).toLocaleString([],{dateStyle:"medium",timeStyle:"short"}):"–";
-const fdd=t=>t?new Date(t).toLocaleDateString([],{dateStyle:"medium"}):"–";
-const PN=()=>canEdit()?"":'<p class="note">You are proposing this change. It is published only after the Founder approves it.</p>';
-function toast(m,bad){let e=$("#toast");if(!e){e=document.createElement("div");e.id="toast";document.body.appendChild(e)}e.textContent=m;e.className=bad?"er":"";e.style.display="block";clearTimeout(e.t);e.t=setTimeout(()=>e.style.display="none",3500)}
-const chip=s=>`<span class="chip c-${s}">${s[0].toUpperCase()+s.slice(1)}</span>`;
-const av=(u,s=34)=>u&&u.photo?`<img class="avt" src="${esc(u.photo)}" width="${s}" height="${s}" alt="">`:`<span class="avt" style="width:${s}px;height:${s}px;font-size:${Math.round(s*.45)}px">${esc(((u&&u.name)||"?")[0]).toUpperCase()}</span>`;
-const uOf=id=>USERS.find(u=>u.id==id);
-const logA=async(a,t)=>{if(live&&canEdit())try{await db.collection("log").add({at:Date.now(),by:user.email,action:a,target:t||""})}catch(e){}};
-async function propose(col,id,act,o){if(!live||!user||!ME)throw new Error("sign in as an Editor first");if(o&&tooBig(o))throw new Error("images too large; remove some or use smaller ones");
-const cur=(col=="cases"?CASES:PAGES).find(x=>x.id==id),nm=(o&&(o.name||o.title))||(cur&&(cur.name||cur.title))||id;
-await db.collection("proposals").add({by:user.uid,byName:ME.name,at:Date.now(),status:"pending",col,target:id,act,title:nm,type:(act=="delete"?"Delete ":cur?"Edit ":"New ")+(col=="cases"?"case":"page"),data:o||null,base:cur?{updated:cur.updated||0}:null})}
-async function commit(col,id,o){if(canEdit()){const n=(col=="cases"?CASES:PAGES).some(x=>x.id==id);await write(col,id,o);logA((n?"Edited ":"Created ")+(col=="cases"?"case ":"page ")+(o.name||o.title),id);return true}await propose(col,id,"save",o);return false}
-const FL={name:"Name",title:"Title",year:"Year",month:"Month",place:"Community",region:"Region",status:"Status",lat:"Latitude",lon:"Longitude",feat:"Featured",summary:"Summary",background:"Background",investigation:"Investigation",legal:"Legal proceedings",more:"More sections",extra:"Infobox rows",refs:"References",body:"Text",images:"Images",draft:"Draft"};
-const dv=v=>v==null||v===""?"–":Array.isArray(v)?(v.length&&typeof v[0]=="object"?v.length+" image(s)":v.join("\n")||"–"):String(v);
-const nz=v=>v==null||v===0||v===""||(Array.isArray(v)&&!v.length)?null:v,same=(a,b)=>JSON.stringify(nz(a))==JSON.stringify(nz(b));
-const propConflict=(p,cur)=>{if((p.act=="delete"||p.base)&&!cur)return{m:"The target no longer exists. It was deleted after this was submitted.",block:1};
-if(p.act=="save"&&!p.base&&cur)return{m:"An item with this address already exists, so approving would overwrite it.",block:1};
-if(p.base&&cur&&(cur.updated||0)!=(p.base.updated||0))return{m:"The published version changed after this was submitted. Check the comparison before approving."};return null};
-function propView(p,adm){const cur=(p.col=="cases"?CASES:PAGES).find(x=>x.id==p.target),d=p.data||{},cf=propConflict(p,cur);
-const keys=p.act=="delete"?[]:Object.keys(FL).filter(k=>k in d||(cur&&k in cur)).filter(k=>!same(d[k],cur&&cur[k]));
-const diff=p.act=="delete"?`<p class="note">This proposal asks to delete ${cur?`“${esc(cur.name||cur.title)}”. If approved it moves to Deleted Content and can be restored.`:"an item that no longer exists."}</p>`:`<div class="tw"><table class="tb df"><thead><tr><th>Field</th><th>Current (published)</th><th>Proposed</th></tr></thead><tbody>${keys.map(k=>`<tr><th>${FL[k]}</th><td class="o">${esc(dv(cur&&cur[k]))}</td><td class="n">${esc(dv(d[k]))}</td></tr>`).join("")||`<tr><td colspan="3" class="mut">No differences from the published version.</td></tr>`}</tbody></table></div>`;
-const own=user&&user.uid==p.by;
-return`<h1>${esc(p.title)}</h1><p class="mut">${esc(p.type)} · by ${own&&!adm?"you":`<a href="#/profile/${p.by}">${esc(p.byName)}</a>`} · submitted ${fdt(p.at)} · ${chip(p.status)}${p.reviewedAt?` · reviewed ${fdt(p.reviewedAt)}`:""}</p>${p.note?`<p class="note">Reviewer note: ${esc(p.note)}</p>`:""}${adm&&p.status=="pending"&&cf?`<p class="note er">${esc(cf.m)}</p>`:""}${diff}
-${adm&&p.status=="pending"?`<div class="f"><label>Review note (required when rejecting)</label><textarea id="rn" maxlength="500"></textarea><p><button class="sv" data-x="ok" data-id="${p.id}">Approve and apply</button> <button class="dn" data-x="no" data-id="${p.id}">Reject</button> <a href="#/admin/proposals">Back</a></p></div>`:`<p><a href="${adm?"#/admin/proposals":"#/profile/"+(user?user.uid:"")}">Back</a></p>`}`}
-const caseRows=()=>{const q=AS.q.toLowerCase(),a=CASES.filter(c=>(!AS.st||c.status==AS.st)&&(!q||[c.name,c.place,c.region,c.status,c.year].join(" ").toLowerCase().includes(q)));
-a.sort(AS.so=="old"?(x,y)=>x.year-y.year||x.month-y.month:AS.so=="name"?(x,y)=>x.name.localeCompare(y.name):AS.so=="upd"?(x,y)=>(y.updated||0)-(x.updated||0):(x,y)=>y.year-x.year||y.month-x.month);
-return a.map(c=>`<tr><td>${th(c)}<a href="#/case/${c.id}">${esc(c.name)}</a>${c.feat?" ★":""}</td><td>${MON[c.month-1].slice(0,3)} ${c.year}</td><td>${esc(c.place)}</td><td><span class="chip" style="color:${COL(c.status)}">${esc(c.status)}</span></td><td class="ac"><a class="btn" href="#/edit/${c.id}">Edit</a> <button data-x="arch" data-id="${c.id}">Archive</button> <button class="dn" data-x="cdel" data-id="${c.id}">Delete</button></td></tr>`).join("")||`<tr><td colspan="5" class="mut">No cases match.</td></tr>`};
-const userRows=()=>{const q=AS.q.toLowerCase();return USERS.filter(u=>(!AS.rl||u.role==AS.rl)&&(!q||((u.name||"")+" "+((PRIV[u.id]||{}).email||"")).toLowerCase().includes(q))).map(u=>{const f=u.role=="founder";return`<tr><td>${av(u)}</td><td><a href="#/profile/${u.id}">${esc(u.name)}</a></td><td>${esc((PRIV[u.id]||{}).email||"–")}</td><td>${chip(u.role||"member")}</td><td>${fdd(u.created)}</td><td>${chip(u.status=="disabled"?"disabled":"active")}</td><td class="ac">${f?'<span class="mut">Protected</span>':`<button data-x="role" data-id="${u.id}">${u.role=="editor"?"Demote to Member":"Promote to Editor"}</button> <button data-x="hist" data-id="${u.id}">Proposals</button> <button data-x="dis" data-id="${u.id}">${u.status=="disabled"?"Enable":"Disable"}</button> <button class="dn" data-x="urm" data-id="${u.id}">Remove</button>`}</td></tr>`}).join("")||`<tr><td colspan="7" class="mut">No users found.</td></tr>`};
-const logRows=()=>{const q=AS.q.toLowerCase();return LOG.filter(l=>!q||(l.action+" "+l.by).toLowerCase().includes(q)).map(l=>`<tr><td>${fdt(l.at)}</td><td>${esc(l.by)}</td><td>${esc(l.action)}</td></tr>`).join("")||`<tr><td colspan="3" class="mut">No entries.</td></tr>`};
-const SECS=[["overview","Overview"],["cases","Case Management"],["pages","Page Management"],["proposals","Proposal Review"],["users","User Management"],["log","Activity Log"],["trash","Deleted Content"],["settings","Website Settings"],["backup","Backup and Restore"]];
-const pend=()=>PROPS.filter(p=>p.status=="pending");
-const tbl=(h,body,n)=>`<div class="tw"><table class="tb"><thead><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody id="tb">${body}</tbody></table></div>`;
-const AD={
-overview(){const day=Date.now()-864e5,pe=pend(),cd=[["Published cases",CASES.length],["Registered users",USERS.length],["Editors",USERS.filter(u=>u.role=="editor").length],["Pending proposals",pe.length],["Custom pages",PAGES.length],["Admin actions (24 h)",LOG.filter(l=>l.at>day).length]];
-return`<h1>Overview</h1><div class="cards">${cd.map(([l,n])=>`<div class="card"><b>${n}</b>${l}</div>`).join("")}</div><div class="g3"><div><h2>Recent activity</h2>${LOG.slice(0,8).map(l=>`<p class="lg">${esc(l.action)}<br><span class="mut">${fdt(l.at)} · ${esc(l.by)}</span></p>`).join("")||"<p class=mut>No actions logged yet.</p>"}</div>
-<div><h2>Pending proposals</h2>${pe.slice(0,6).map(p=>`<p class="lg"><a href="#/admin/proposals/${p.id}">${esc(p.title)}</a><br><span class="mut">${esc(p.type)} · ${esc(p.byName)} · ${fdt(p.at)}</span></p>`).join("")||"<p class=mut>Nothing is waiting for review.</p>"}</div>
-<div><h2>Quick actions</h2><p><a class="btn" href="#/edit/">New case</a> <a class="btn" href="#/editpage/">New page</a></p><p><a class="btn" href="#/admin/proposals">Review proposals</a> <a class="btn" href="#/admin/users">Manage users</a></p><p><a class="btn" href="#/admin/backup">Back up now</a> <a class="btn" href="#/admin/settings">Site settings</a></p></div></div>`},
-cases(){const st=[...new Set(CASES.map(c=>c.status))].sort();return`<h1>Case Management <span class="mut">(${CASES.length})</span></h1><div class="tl"><input id="aq" placeholder="Search cases" value="${esc(AS.q)}"><select id="ast"><option value="">All statuses</option>${st.map(s=>`<option ${AS.st==s?"selected":""}>${esc(s)}</option>`).join("")}</select><select id="aso">${[["new","Newest first"],["old","Oldest first"],["name","Name A to Z"],["upd","Recently edited"]].map(([k,v])=>`<option value="${k}" ${AS.so==k?"selected":""}>${v}</option>`).join("")}</select><a class="btn" href="#/edit/">+ New case</a></div>${tbl(["Case","Date","Location","Status",""],caseRows())}`},
-pages(){return`<h1>Page Management</h1><p><a class="btn" href="#/editpage/">+ New page</a></p>${tbl(["Title","Address","Status","Updated",""],PAGES.map(p=>`<tr><td><a href="#/page/${p.id}">${esc(p.title)}</a></td><td class="mut">#/page/${esc(p.id)}</td><td>${p.draft?'<span class="chip c-pending">Draft</span>':'<span class="chip c-approved">Published</span>'}</td><td>${fdd(p.updated)}</td><td class="ac"><a class="btn" href="#/editpage/${p.id}">Edit</a> <button data-x="pub" data-id="${p.id}">${p.draft?"Publish":"Unpublish"}</button> <button class="dn" data-x="pdel" data-id="${p.id}">Delete</button></td></tr>`).join("")||`<tr><td colspan="5" class="mut">No custom pages yet.</td></tr>`)}`},
-proposals(sub){if(sub){const p=PROPS.find(x=>x.id==sub);return p?propView(p,true):`<h1>Proposal</h1><p>Not found. <a href="#/admin/proposals">Back to the list</a></p>`}
-const L=PROPS.filter(x=>!AS.pu||x.by==AS.pu),row=x=>`<tr><td><a href="#/admin/proposals/${x.id}">${esc(x.title)}</a></td><td>${esc(x.type)}</td><td>${esc(x.byName)}</td><td>${fdt(x.at)}</td><td>${chip(x.status)}</td><td>${fdt(x.reviewedAt)}</td></tr>`,H=["Proposal","Type","Editor","Submitted","Status","Reviewed"],pe=L.filter(x=>x.status=="pending"),rv=L.filter(x=>x.status!="pending");
-return`<h1>Proposal Review</h1>${AS.pu?`<p class="note">Showing proposals by ${esc((uOf(AS.pu)||{}).name||"this user")}. <a data-clr="1">Show all</a></p>`:""}<h2>Pending (${pe.length})</h2>${tbl(H,pe.map(row).join("")||`<tr><td colspan="6" class="mut">No pending proposals.</td></tr>`)}<h2>Previously reviewed</h2>${tbl(H,rv.map(row).join("")||`<tr><td colspan="6" class="mut">Nothing reviewed yet.</td></tr>`)}`},
-users(){return`<h1>User Management <span class="mut">(${USERS.length})</span></h1><div class="tl"><input id="aq" placeholder="Search name or email" value="${esc(AS.q)}"><select id="arl"><option value="">All roles</option>${["founder","editor","member"].map(r=>`<option ${AS.rl==r?"selected":""}>${r}</option>`).join("")}</select></div>${tbl(["","Name","Email","Role","Registered","Status",""],userRows())}<p class="mut">Remove deletes the person's profile on this website only. Their Google account is not touched, and they can sign in again as a Member.</p>`},
-log(){return`<h1>Activity Log</h1><div class="tl"><input id="aq" placeholder="Filter the log" value="${esc(AS.q)}"></div>${tbl(["When","Who","Action"],logRows())}`},
-trash(){const row=(c,k)=>`<tr><td>${esc(c.name||c.title)}</td><td>${k=="c"?(c.arch?"Archived case":"Deleted case"):"Deleted page"}</td><td>${fdd(c.delAt)}</td><td class="ac"><button data-x="${k}rst" data-id="${c.id}">Restore</button> <button class="dn" data-x="${k}prg" data-id="${c.id}">Delete permanently</button></td></tr>`;
-return`<h1>Deleted Content</h1><p class="mut">Restore an item, or delete it permanently. Permanent deletion cannot be undone.</p>${tbl(["Title","Type","Removed",""],DELETED.map(c=>row(c,"c")).join("")+DPAGES.map(c=>row(c,"p")).join("")||`<tr><td colspan="4" class="mut">Nothing here.</td></tr>`)}`},
-settings(){return`<h1>Website Settings</h1><div class="f"><h2>Admin panel appearance</h2><div class="two"><div><label>Theme</label><select id="pth">${[["auto","Match my device"],["light","Light"],["dark","Dark"]].map(([k,v])=>`<option value="${k}" ${(AP.theme||"auto")==k?"selected":""}>${v}</option>`).join("")}</select></div><div><label>Accent colour</label><input type="color" id="pac" value="${AP.acc||"#3366cc"}"></div></div><label><input type="checkbox" id="pcp" ${AP.compact?"checked":""}> Compact tables</label></div>`+R.settings().replace("<h1>Customize site</h1>","")},
-backup(){return`<h1>Backup and Restore</h1><p>Download cases, pages, deleted items and site settings as one JSON file.</p><p><button type="button" id="dlb" class="sv">Download backup</button></p><h2>Restore</h2><p class="note">Restoring replaces all current cases, pages and settings with the file's contents. Download a fresh backup first.</p><p><input type="file" id="rbb" accept="application/json"> <span class="mut" id="bmsg"></span></p>`}};
-R.adm=(sec,sub)=>{if(!canEdit())return`<h1>Admin Panel</h1><p>The Admin Panel is only available to the Founder. ${user?"Your account does not have access.":"Sign in with the Founder's Google account."}</p>`;
-sec=SECS.some(s=>s[0]==sec)?sec:"overview";if(AS.sec!=sec){AS.q=AS.st=AS.rl="";if(sec!="proposals")AS.pu="";AS.sec=sec}
-const t=AP.theme||"auto",n=pend().length;
-return`<div class="adm ${t=="dark"?"dk":t=="light"?"lt":""} ${AP.compact?"cp":""}" style="--aa:${esc(AP.acc||"#3366cc")}"><aside class="sb"><b style="display:block;padding:4px 10px 12px;font-size:15px">${esc(SITE.title)}<br><span class="mut">Admin Panel</span></b>${SECS.map(([k,l])=>`<a href="#/admin/${k}" class="${k==sec?"on":""}">${l}${k=="proposals"&&n?`<span class="chip">${n}</span>`:""}</a>`).join("")}<a href="#/" style="margin-top:14px;border-top:1px solid var(--bd);border-radius:0">Return to Website</a></aside><section class="am">${AD[sec](sub)}</section></div>`};
-R.profile=id=>{const u=USERS.find(x=>x.id==id);if(!u)return`<h1>Profile</h1><p class="mut">No such profile.</p>`;const own=user&&user.uid==id,mine=own||canEdit(),L=mine?PROPS.filter(p=>p.by==id):[],cn=s=>L.filter(p=>p.status==s).length;
-return`<div class="ph">${av(u,96)}<div><h1 style="border:0;margin:0">${esc(u.name)}</h1>${chip(u.role||"member")}${u.status=="disabled"&&canEdit()?" "+chip("disabled"):""}</div></div>${own?`<p><a class="btn" href="#/editprofile">Edit profile</a></p>`:""}<p>${u.bio?esc(u.bio).replace(/\n/g,"<br>"):'<span class="mut">No biography yet.</span>'}</p><table class="info" style="float:none;width:100%;max-width:440px"><tr><th>Member since</th><td>${fdd(u.created)}</td></tr><tr><th>Published contributions</th><td>${u.contrib||0}</td></tr>${mine?`<tr><th>Proposals</th><td>${L.length} submitted · ${cn("pending")} pending · ${cn("approved")} approved · ${cn("rejected")} rejected</td></tr>`:""}</table>${mine&&(L.length||own)?`<h2>Proposal history</h2>${tbl(["Proposal","Type","Submitted","Status","Reviewed","Feedback"],L.map(p=>`<tr><td><a href="#/proposal/${p.id}">${esc(p.title)}</a></td><td>${esc(p.type)}</td><td>${fdd(p.at)}</td><td>${chip(p.status)}</td><td>${fdd(p.reviewedAt)}</td><td>${esc(p.note||"")}</td></tr>`).join("")||`<tr><td colspan="6" class="mut">No proposals yet.</td></tr>`)}`:""}`};
-R.editprofile=()=>{if(!user||!ME)return`<h1>Edit profile</h1><p>Sign in to edit your profile.</p>`;return`<h1>Edit profile</h1><form class="f" id="pff"><div class="ph">${av(ME,80)}<div><label>Profile picture (JPG, PNG, WebP or GIF, up to 5 MB)</label><input type="file" id="pph" accept="image/jpeg,image/png,image/webp,image/gif"> <button type="button" id="prm">Remove picture</button></div></div><label>Display name (2 to 40 characters)</label><input name="name" required minlength="2" maxlength="40" value="${esc(ME.name)}"><label>Biography (up to 500 characters)</label><textarea name="bio" maxlength="500">${esc(ME.bio||"")}</textarea><p><button type="button" class="sv">Save changes</button> <a href="#/profile/${user.uid}">Cancel</a></p><p class="mut" id="msg"></p></form>`};
-R.proposal=id=>{const p=PROPS.find(x=>x.id==id);return p&&user?propView(p,false):`<h1>Proposal</h1><p>This proposal is private or does not exist.</p>`};
-function hooks(p,id,sub){
-if(p=="editprofile"&&user&&ME){let ph=ME.photo||"";const F=$("#pff"),m=$("#msg");
-$("#pph").onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!/^image\/(jpeg|png|webp|gif)$/.test(f.type)){m.textContent="Use a JPG, PNG, WebP or GIF image.";return}if(f.size>5e6){m.textContent="That image is over 5 MB. Choose a smaller one.";return}const s=await shrink(f,256);if(!s){m.textContent="That image could not be read.";return}ph=s;m.textContent="Picture ready. Save changes to keep it."};
-$("#prm").onclick=()=>{ph="";m.textContent="The picture will be removed when you save."};
-bind(F,async()=>{const f=Object.fromEntries(new FormData(F)),n=f.name.trim().replace(/\s+/g," ");if(n.length<2||n.length>40||/[<>]/.test(n)){m.textContent="The name must be 2 to 40 characters and cannot contain < or >.";return}if(f.bio.length>500){m.textContent="The biography is limited to 500 characters.";return}
-try{await db.collection("users").doc(user.uid).update({name:n,bio:f.bio.trim(),photo:ph});toast("Profile saved");go("#/profile/"+user.uid)}catch(x){m.textContent="Save failed: "+x.message}})}
-if(p=="admin"&&canEdit()){const sec=id||"overview",RW={cases:caseRows,users:userRows,log:logRows}[sec],aq=$("#aq"),tb=$("#tb"),sl=(k,e)=>{const s=$(e);if(s)s.onchange=()=>{AS[k]=s.value;tb.innerHTML=RW()}};
-if(aq&&tb)aq.oninput=()=>{AS.q=aq.value;tb.innerHTML=RW()};sl("st","#ast");sl("so","#aso");sl("rl","#arl");
-const cl=$("[data-clr]");if(cl)cl.onclick=()=>{AS.pu="";route()};
-const ap=()=>{const a=$(".adm");a.classList.toggle("dk",AP.theme=="dark");a.classList.toggle("lt",AP.theme=="light");a.classList.toggle("cp",!!AP.compact);a.style.setProperty("--aa",AP.acc||"#3366cc");try{localStorage.setItem("nlmw-adm",JSON.stringify(AP))}catch(e){}};
-[["#pth","theme","value"],["#pac","acc","value"],["#pcp","compact","checked"]].forEach(([e,k,v])=>{const el=$(e);if(el)el.onchange=()=>{AP[k]=el[v];ap()}});
-app.onclick=async e=>{const b=e.target.closest("[data-x]");if(!b)return;const x=b.dataset.x,i=b.dataset.id;
-if(["arch","cdel","pdel","urm","cprg","pprg"].includes(x)&&!b.dataset.s){b.dataset.s=1;b.dataset.t=b.textContent;b.textContent="Click again to confirm";setTimeout(()=>{if(b.isConnected){delete b.dataset.s;b.textContent=b.dataset.t}},4000);return}
-try{
-if(x=="arch"||x=="cdel"){const c=CASES.find(k=>k.id==i),r={...c};delete r.id;await write("cases",i,{...r,del:1,delAt:Date.now(),...(x=="arch"?{arch:1}:{})});logA((x=="arch"?"Archived":"Deleted")+" case "+c.name,i)}
-else if(x=="pub"){const q=PAGES.find(k=>k.id==i),r={...q};delete r.id;r.draft=q.draft?0:1;r.updated=Date.now();await write("pages",i,r);logA((q.draft?"Published":"Unpublished")+" page "+q.title,i)}
-else if(x=="pdel"){const q=PAGES.find(k=>k.id==i);await remove("pages",i);SITE.nav=SITE.nav.filter(n=>n.t!="page:"+i);await saveSite({nav:SITE.nav});logA("Deleted page "+q.title,i)}
-else if(x=="crst"){const c=DELETED.find(k=>k.id==i),r={...c};["id","del","delAt","arch"].forEach(k=>delete r[k]);await write("cases",i,r);logA("Restored case "+c.name,i)}
-else if(x=="prst"){const c=DPAGES.find(k=>k.id==i),r={...c};["id","del","delAt"].forEach(k=>delete r[k]);await write("pages",i,r);logA("Restored page "+c.title,i)}
-else if(x=="cprg"){const c=DELETED.find(k=>k.id==i);await purge(i);logA("Permanently deleted case "+c.name,i)}
-else if(x=="pprg"){const c=DPAGES.find(k=>k.id==i);if(live)await db.collection("pages").doc(i).delete();DPAGES=DPAGES.filter(k=>k.id!=i);logA("Permanently deleted page "+c.title,i)}
-else if(x=="role"){const u=uOf(i),r=u.role=="editor"?"member":"editor";await db.collection("users").doc(i).update({role:r});logA((r=="editor"?"Promoted ":"Demoted ")+u.name+" to "+r,i)}
-else if(x=="dis"){const u=uOf(i),st=u.status=="disabled"?"active":"disabled";await db.collection("users").doc(i).update({status:st});logA((st=="active"?"Enabled ":"Disabled ")+u.name,i)}
-else if(x=="urm"){const u=uOf(i);await db.collection("users").doc(i).delete();await db.collection("private").doc(i).delete().catch(()=>{});logA("Removed profile of "+u.name,i)}
-else if(x=="hist"){AS.pu=i;go("#/admin/proposals");return}
-else if(x=="ok"||x=="no"){const q=PROPS.find(k=>k.id==i),note=($("#rn").value||"").trim();if(x=="no"&&!note){toast("Add a rejection explanation first.",1);return}
-const cf=propConflict(q,(q.col=="cases"?CASES:PAGES).find(k=>k.id==q.target));if(x=="ok"&&cf&&cf.block){toast(cf.m,1);return}
-const ref=db.collection("proposals").doc(i);await db.runTransaction(async t=>{const s=await t.get(ref);if(!s.exists||s.data().status!="pending")throw new Error("This proposal was already reviewed.");t.update(ref,{status:x=="ok"?"approved":"rejected",reviewedAt:Date.now(),reviewer:user.email,note})});
-if(x=="ok"){try{q.act=="delete"?await remove(q.col,q.target):await write(q.col,q.target,{...q.data,updated:Date.now()});db.collection("users").doc(q.by).update({contrib:firebase.firestore.FieldValue.increment(1)}).catch(()=>{})}catch(er){await ref.update({status:"pending",reviewedAt:null,reviewer:null,note:""});throw er}}
-logA((x=="ok"?"Approved":"Rejected")+" proposal: "+q.title,i);toast(x=="ok"?"Approved and applied.":"Rejected. Published content is unchanged.");go("#/admin/proposals");return}
-toast("Done.");route()}catch(er){toast(er.message||"That failed.",1);if(b.isConnected){delete b.dataset.s;if(b.dataset.t)b.textContent=b.dataset.t}}}}}
 // ---------- chrome ----------
 function theme(){const r=document.documentElement.style,t=SITE.theme||{};["--acc","--link","--bg","--fg","--font","--hf","--w"].forEach(k=>r.removeProperty(k));
 if(t.acc){r.setProperty("--acc",t.acc);r.setProperty("--link",t.link);r.setProperty("--bg",t.bg);r.setProperty("--fg",t.fg);r.setProperty("--bd","#8884");r.setProperty("--mut","#888");const f={sans:"system-ui,sans-serif",serif:"Georgia,serif",mono:"ui-monospace,Menlo,monospace"}[t.font]||"system-ui,sans-serif";r.setProperty("--font",f);r.setProperty("--hf",f);r.setProperty("--w",(t.w||820)+"px")}else r.removeProperty("--bd")}
 const href=n=>n.t=="home"?"#/":n.t.startsWith("page:")?"#/page/"+n.t.slice(5):"#/"+n.t;
 function chrome(){theme();
 {let e=$("#ccss");if(!e){e=document.createElement("style");e.id="ccss";document.head.appendChild(e)}e.textContent=SITE.customcss||""}document.title=SITE.title;$("#logo").innerHTML=(SITE.logo?`<img src="${esc(SITE.logo)}" alt="">`:"")+esc(SITE.title);
-$("#nav").innerHTML=SITE.nav.filter(n=>!(n.t.startsWith("page:")&&(PAGES.find(p=>"page:"+p.id==n.t)||{}).draft&&!canEdit())).map(n=>{const h=href(n),on=cur==h||(h!="#/"&&cur.startsWith(h+"/"))||(cur.startsWith("#/case")&&n.t=="cases");return`<a href="${h}" class="${on?"on":""}">${esc(n.l)}</a>`}).join("");
-let a="";if(live)a=user?`<a href="#/profile/${user.uid}">${esc(ME&&ME.name||user.displayName||user.email)}</a> <span class="mut">(${role()})</span> <button id="so">Sign out</button>`:`<button id="si"><b style="color:#4285f4">G</b> Sign in with Google</button>`;
-else a=localEdit?`Local mode, editing on <button id="lo">Stop</button>`:`<button id="le">Edit (local preview)</button>`;
-if(canEdit())a=`<a href="#/admin">Admin panel</a> · `+a;$("#auth").innerHTML=a;
+$("#nav").innerHTML=SITE.nav.map(n=>{const h=href(n),on=cur==h||(h!="#/"&&cur.startsWith(h+"/"))||(cur.startsWith("#/case")&&n.t=="cases");return`<a href="${h}" class="${on?"on":""}">${esc(n.l)}</a>`}).join("");
+let a="";
+if(live&&user){const ini=esc(((user.displayName||user.email||"?")[0]||"?").toUpperCase());
+const av=user.photoURL?`<img src="${esc(user.photoURL)}" alt="" style="width:22px;height:22px;border-radius:50%;vertical-align:middle">`:`<span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--acc);color:var(--bg);text-align:center;font-size:12px;line-height:22px;vertical-align:middle">${ini}</span>`;
+a=`${av} <a href="#/profile">${esc(user.displayName||user.email)}</a> <b>(${esc(myLabel())})</b>`;
+if(canEdit())a=` <a href="#/admin">Customize</a> · <a href="#/panel">Panel</a> · `+a;
+a+=` · <button id="so">Sign out</button>`}
+else if(live)a=`<button id="si"><b style="color:#4285f4">G</b> Sign in with Google</button>`;
+else a=localEdit?`Local mode (Founder) <button id="lo">Stop</button>`:`<button id="le">Edit (local preview)</button>`;
+$("#auth").innerHTML=a;
 $("#foot").textContent=SITE.footer+(live?"":" · Local mode: edits stay in this browser only.");
 const b=i=>$("#"+i);
 if(b("si"))b("si").onclick=async()=>{try{await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider())}catch(e){$("#auth").textContent="Sign-in failed: "+e.message}};
@@ -391,16 +337,25 @@ const twoStep=(el,fn)=>{if(el)el.onclick=async e=>{e.preventDefault();if(!el.dat
 function go(h){cur=h;try{history.replaceState(null,"",h)}catch(e){}route()}
 document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href^='#']");if(!a)return;e.preventDefault();go(a.getAttribute("href"))});
 function route(){const h=cur.replace(/^#\/?/,"").split("/"),p=h[0]||"home",id=h[1];
-const f={case:()=>R.case(id),edit:()=>R.edit(id),page:()=>R.page(id),editpage:()=>R.editpage(id),search:()=>R.search(decodeURIComponent(id||"")),admin:()=>R.adm(id,h[2]),profile:()=>R.profile(id),editprofile:()=>R.editprofile(),proposal:()=>R.proposal(id)}[p]||(Object.hasOwn(R,p)?R[p]:R.home);
-app.innerHTML=f();scrollTo(0,0);chrome();document.body.classList.toggle("isadm",p=="admin"&&canEdit());
+const f={case:()=>R.case(id),edit:()=>R.edit(id),page:()=>R.page(id),editpage:()=>R.editpage(id),search:()=>R.search(decodeURIComponent(id||"")),user:()=>R.user(id),panel:()=>R.panel(),profile:()=>R.profile()}[p]||(Object.hasOwn(R,p)?R[p]:R.home);
+app.innerHTML=f();scrollTo(0,0);chrome();
+if(p=="panel"&&canEdit()){
+app.querySelectorAll("[data-ap]").forEach(b=>b.onclick=async()=>{const pr=PROPOSALS.find(x=>x.id===b.dataset.ap);if(!pr)return;b.textContent="Approving…";try{await approveProp(pr);route()}catch(x){b.textContent="Failed: "+x.message}});
+app.querySelectorAll("[data-rj]").forEach(b=>b.onclick=async()=>{const pr=PROPOSALS.find(x=>x.id===b.dataset.rj);if(!pr)return;const inp=app.querySelector(`[data-rsn="${pr.id}"]`);try{await setProp(pr.id,{status:"rejected",reason:inp?inp.value.trim():"",reviewAt:Date.now()});route()}catch(x){b.textContent="Failed"}});
+app.querySelectorAll("[data-pro]").forEach(b=>b.onclick=async()=>{try{if(live)await db.collection("users").doc(b.dataset.pro).update({role:"editor"});route()}catch(x){b.textContent="Failed"}});
+app.querySelectorAll("[data-dem]").forEach(b=>b.onclick=async()=>{try{if(live)await db.collection("users").doc(b.dataset.dem).update({role:"member"});route()}catch(x){b.textContent="Failed"}});
+app.querySelectorAll("[data-urm]").forEach(b=>b.onclick=async()=>{try{if(live)await db.collection("users").doc(b.dataset.urm).delete();else{}route()}catch(x){b.textContent="Failed"}});
+const pf=$("#pform");if(pf)bind(pf,async()=>{const f3=Object.fromEntries(new FormData(pf));try{await saveSite({panel:{ranks:{founder:f3.r_founder,editor:f3.r_editor,member:f3.r_member},sections:{dash:+!!f3.s_dash,queue:+!!f3.s_queue,users:+!!f3.s_users,activity:+!!f3.s_activity}}});$("#pmsg").textContent="Saved";setTimeout(route,400)}catch(x){$("#pmsg").textContent="Failed: "+x.message}})}
+if(p=="profile"){const mf=$("#meform");if(mf)bind(mf,async()=>{const f4=Object.fromEntries(new FormData(mf));try{if(live)await db.collection("users").doc(user.uid).update({name:f4.name,bio:f4.bio});$("#memsg").textContent="Saved"}catch(x){$("#memsg").textContent="Failed: "+x.message}})}
 if(p=="locations"){const mf=mapInit(app.querySelector(".mapbox"),{pins:pins(),pick:canEdit()?(la,lo)=>{NEWAT={lat:la,lon:lo};$("#pinfo").innerHTML=`New case at ${la.toFixed(3)}, ${lo.toFixed(3)}: <a href="#/edit/">Create it</a>`}:null,onPin:q=>{const c=q.c;$("#pinfo").innerHTML=`${th(c)}<b>${link(c)}</b><br><span class="mut">${MON[c.month-1]} ${c.year} · ${esc(c.place)} · ${esc(c.status)}</span><br>${esc(c.summary)}`}});
 const chips=app.querySelectorAll(".flt [data-f]"),yr=app.querySelector("#yr"),yrr=app.querySelector("#yrr");
 let fst="all";const ys=years();yr.min=Math.min.apply(null,ys);yr.max=Math.max.apply(null,ys.concat([new Date().getFullYear()]));yr.value=+yr.min;
 const apply=()=>{chips.forEach(b=>b.classList.toggle("on",b.dataset.f===fst));yrr.textContent=yr.value;mf.filter(x=>(fst==="all"||x.st===fst)&&x.yr>=+yr.value)};
 chips.forEach(b=>b.onclick=()=>{fst=b.dataset.f;apply()});yr.oninput=apply;apply()}
-if(p=="case")twoStep($("#del"),async()=>{if(canEdit()){const c=CASES.find(x=>x.id==id);await remove("cases",id);logA("Deleted case "+(c?c.name:id),id);go("#/cases")}else{await propose("cases",id,"delete");toast("Deletion proposed for review.");go("#/profile/"+user.uid)}});
+if(p=="case")twoStep($("#del"),async()=>{if(canEdit()){await remove("cases",id);go("#/cases")}
+else{await propose({type:"delete",col:"cases",target:id,data:{}});const d2=$("#del");if(d2)d2.textContent="Deletion proposed — awaiting Founder approval"}});
 const cl=$("#clone");if(cl)cl.onclick=()=>{CLONE=id;go("#/edit/")};
-if(p=="edit"&&(canEdit()||canProp())){imgEd($("#ie"),DRAFT);const F=$("#ef"),I=n=>F.elements[n];
+if(p=="edit"&&(canEdit()||canPropose())){imgEd($("#ie"),DRAFT);const F=$("#ef"),I=n=>F.elements[n];
 const msgEl=$("#msg");const DK="nlmw-draft-"+(id||"new");
 try{const d=JSON.parse(localStorage.getItem(DK)||"{}");for(const k in d)if(F.elements[k]&&F.elements[k].type!="file")F.elements[k].value=d[k]}catch(e){}
 F.addEventListener("input",()=>{try{localStorage.setItem(DK,JSON.stringify(Object.fromEntries(new FormData(F))))}catch(e){}});
@@ -411,16 +366,22 @@ bind(F,async()=>{const f=Object.fromEntries(new FormData(F)),la=parseFloat(f.lat
 const nid=id||(slug(f.name)+"-"+f.year);
 if(!id&&CASES.some(c=>c.id===nid)){msgEl.textContent="An article with this name and year already exists. Change the name or year.";return}
 const o={name:f.name,year:+f.year,month:+f.month,place:f.place,region:f.region,status:f.status,updated:Date.now(),feat:+!!f.feat,lat:isFinite(la)?la:null,lon:isFinite(lo)?lo:null,summary:f.summary,background:f.background,investigation:f.investigation,legal:f.legal,more:f.more,extra:f.extra,refs:f.refs.split("\n").map(s=>s.trim()).filter(Boolean),images:DRAFT};
-try{const now=await commit("cases",nid,o);localStorage.removeItem(DK);if(now)go("#/case/"+nid);else{toast("Proposal submitted for review.");go("#/profile/"+user.uid)}}catch(x){msgEl.textContent="Save failed: "+x.message}})}
-if(p=="editpage"&&(canEdit()||canProp())){imgEd($("#ie"),DRAFT);const F=$("#pf"),msgEl2=$("#msg"),DPK="nlmw-draft-page-"+(id||"new");
+try{
+if(canEdit()){await write("cases",nid,o);localStorage.removeItem(DK);go("#/case/"+nid)}
+else{await propose({type:id?"edit":"new",col:"cases",target:id||nid,data:o});localStorage.removeItem(DK);msgEl.textContent="Proposal sent to the Founder for approval.";setTimeout(()=>go("#/case/"+nid),1000)}
+}catch(x){msgEl.textContent="Save failed: "+x.message}})}
+if(p=="editpage"&&(canEdit()||canPropose())){imgEd($("#ie"),DRAFT);const F=$("#pf"),msgEl2=$("#msg"),DPK="nlmw-draft-page-"+(id||"new");
 try{const d=JSON.parse(localStorage.getItem(DPK)||"{}");for(const k in d)if(F.elements[k]&&F.elements[k].type!="file")F.elements[k].value=d[k]}catch(e){}
-F.addEventListener("input",()=>{try{localStorage.setItem(DPK,JSON.stringify(Object.fromEntries(new FormData(F))))}catch(e){}});twoStep($("#delp"),async()=>{if(!canEdit()){await propose("pages",id,"delete");toast("Deletion proposed for review.");return go("#/profile/"+user.uid)}await remove("pages",id);SITE.nav=SITE.nav.filter(n=>n.t!="page:"+id);await saveSite({nav:SITE.nav});logA("Deleted page "+id,id);go("#/admin/pages")});
-bind(F,async()=>{const f=Object.fromEntries(new FormData(F));let nid=id;if(!nid){const used=k=>PAGES.concat(DPAGES).some(x=>x.id==k);nid=f.slug?slug(f.slug):slug(f.title);if(f.slug&&used(nid)){msgEl2.textContent="That page address is already used. Choose another.";return}while(used(nid))nid+="-2"}
-try{const ex=PAGES.find(x=>x.id==id)||{},now=await commit("pages",nid,{title:f.title,body:f.body,images:DRAFT,updated:Date.now(),draft:canEdit()?(f.pub?0:1):(ex.draft||0)});localStorage.removeItem(DPK);if(now){if(!id&&f.tab)await saveSite({nav:[...SITE.nav,{l:f.title,t:"page:"+nid}]});go("#/page/"+nid)}else{toast("Proposal submitted for review.");go("#/profile/"+user.uid)}}catch(x){msgEl2.textContent="Save failed: "+x.message}})}
-if(p=="admin"&&id=="settings"&&canEdit()){imgEd($("#logoe"),DLOGO,1);imgEd($("#bane"),DBAN,1);navEd($("#nave"),DNAV);const F=$("#af");
+F.addEventListener("input",()=>{try{localStorage.setItem(DPK,JSON.stringify(Object.fromEntries(new FormData(F))))}catch(e){}});twoStep($("#delp"),async()=>{await remove("pages",id);SITE.nav=SITE.nav.filter(n=>n.t!="page:"+id);await saveSite({nav:SITE.nav});go("#/admin")});
+bind(F,async()=>{const f=Object.fromEntries(new FormData(F));let nid=id;if(!nid){nid=slug(f.title);while(PAGES.some(x=>x.id==nid))nid+="-2"}
+try{
+if(canEdit()){await write("pages",nid,{title:f.title,body:f.body,images:DRAFT});localStorage.removeItem(DPK);if(!id&&f.tab)await saveSite({nav:[...SITE.nav,{l:f.title,t:"page:"+nid}]});go("#/page/"+nid)}
+else{await propose({type:id?"edit":"new",col:"pages",target:id||nid,data:{title:f.title,body:f.body,images:DRAFT}});localStorage.removeItem(DPK);msgEl2.textContent="Proposal sent to the Founder for approval.";setTimeout(()=>go("#/page/"+nid),1000)}
+}catch(x){msgEl2.textContent="Save failed: "+x.message}})}
+if(p=="admin"&&canEdit()){imgEd($("#logoe"),DLOGO,1);imgEd($("#bane"),DBAN,1);navEd($("#nave"),DNAV);const F=$("#af");
 bind(F,async()=>{const f=Object.fromEntries(new FormData(F));try{const nav=[];for(const n of DNAV){let t=n.t;if(t=="__new"){let nid=slug(n.l);while(PAGES.some(x=>x.id==nid))nid+="-2";await write("pages",nid,{title:n.l,body:"This page is empty. Use “Edit this page” to add text and images.",images:[]});t="page:"+nid}nav.push({l:n.l,t})}
-await saveSite({title:f.title,tagline:f.tagline,notice:f.notice,about:f.about,footer:f.footer,logo:DLOGO[0]?DLOGO[0].src:"",banner:DBAN[0]?DBAN[0].src:"",nav,home:{recent:+!!f.h_recent,years:+!!f.h_years,locs:+!!f.h_locs,latest:+!!f.h_latest},customcss:f.customcss||"",theme:f.usetheme?{acc:f.acc,link:f.link,bg:f.bg,fg:f.fg,font:f.font,w:+f.w}:{}});logA("Updated website settings");toast("Settings saved.");go("#/admin/settings")}catch(x){$("#msg").textContent="Save failed: "+x.message}})}
-const dlb=$("#dlb");if(dlb)dlb.onclick=()=>{try{const data=JSON.stringify({cases:CASES.concat(DELETED),pages:PAGES.concat(DPAGES),site:SITE},null,1);const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download="nlwiki-backup.json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);$("#bmsg").textContent="Backup downloaded."}catch(x){$("#bmsg").textContent="Backup failed: "+x.message}};
+await saveSite({title:f.title,tagline:f.tagline,notice:f.notice,about:f.about,footer:f.footer,logo:DLOGO[0]?DLOGO[0].src:"",banner:DBAN[0]?DBAN[0].src:"",nav,home:{recent:+!!f.h_recent,years:+!!f.h_years,locs:+!!f.h_locs,latest:+!!f.h_latest},customcss:f.customcss||"",theme:f.usetheme?{acc:f.acc,link:f.link,bg:f.bg,fg:f.fg,font:f.font,w:+f.w}:{}});go("#/")}catch(x){$("#msg").textContent="Save failed: "+x.message}})}
+const dlb=$("#dlb");if(dlb)dlb.onclick=()=>{try{const data=JSON.stringify({cases:CASES,pages:PAGES,site:SITE},null,1);const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([data],{type:"application/json"}));a.download="nlwiki-backup.json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000);$("#bmsg").textContent="Backup downloaded."}catch(x){$("#bmsg").textContent="Backup failed: "+x.message}};
 const rbb=$("#rbb");app.querySelectorAll("[data-rst]").forEach(b=>b.onclick=async()=>{const c=DELETED.find(x=>x.id==b.dataset.rst);if(!c)return;const r={...c};delete r.id;delete r.del;delete r.delAt;try{await write("cases",c.id,r);route()}catch(x){b.textContent="Failed"}});
 app.querySelectorAll("[data-prg]").forEach(b=>b.onclick=async()=>{await purge(b.dataset.prg);route()});
 if(rbb)rbb.onchange=async()=>{const f2=rbb.files[0];if(!f2)return;try{const d=JSON.parse(await f2.text());if(!Array.isArray(d.cases))throw new Error("not a valid backup file");
@@ -428,20 +389,19 @@ if(live){const b2=db.batch();d.cases.forEach(c=>{const{id,...r}=c;b2.set(db.coll
  if(d.site)await db.collection("site").doc("main").set(d.site);
  const ps=await db.collection("pages").get();const pb=db.batch();ps.forEach(doc=>pb.delete(doc.ref));(d.pages||[]).forEach(p=>{const{id,...r}=p;pb.set(db.collection("pages").doc(id),r)});await pb.commit()}
 else{CASES=d.cases.filter(c=>!c.del);DELETED=d.cases.filter(c=>c.del);PAGES=d.pages||[];SITE={...structuredClone(DEF),...d.site};persist()}
-$("#bmsg").textContent="Restore complete.";setTimeout(()=>go("#/"),700)}catch(x){$("#bmsg").textContent="Restore failed: "+x.message}};hooks(p,id,h[2])}
+$("#bmsg").textContent="Restore complete.";setTimeout(()=>go("#/"),700)}catch(x){$("#bmsg").textContent="Restore failed: "+x.message}};}
 bind($("#sf"),()=>go("#/search/"+encodeURIComponent($("#q").value)));
 addEventListener("hashchange",()=>{if(location.hash&&location.hash!==cur){cur=location.hash;route()}});
 if(live){CASES=structuredClone(SAMPLES);usingSamples=true;firebase.initializeApp(FIREBASE_CONFIG);db=firebase.firestore();
-firebase.auth().onAuthStateChanged(u=>{user=u;unsub.forEach(f=>f());unsub=[];ME=null;PROPS=[];LOG=[];PRIV={};
-if(u){const ur=db.collection("users").doc(u.uid),fe=canEdit(),pm=d=>({id:d.id,...d.data()});
-unsub.push(ur.onSnapshot(async d=>{if(d.exists){ME=pm(d);rt()}else try{await ur.set({name:u.displayName||(u.email||"user").split("@")[0],bio:"",photo:u.photoURL||"",role:fe?"founder":"member",status:"active",created:Date.now(),contrib:0});await db.collection("private").doc(u.uid).set({email:u.email||""})}catch(x){}},()=>{}));
-unsub.push((fe?db.collection("proposals"):db.collection("proposals").where("by","==",u.uid)).onSnapshot(s=>{PROPS=s.docs.map(pm).sort((a,b)=>b.at-a.at);rr()},()=>{}));
-if(fe){unsub.push(db.collection("log").orderBy("at","desc").limit(300).onSnapshot(s=>{LOG=s.docs.map(pm);rr()},()=>{}));unsub.push(db.collection("private").onSnapshot(s=>{PRIV={};s.docs.forEach(d=>PRIV[d.id]=d.data());rr()},()=>{}))}}
+firebase.auth().onAuthStateChanged(async u=>{user=u;
+if(u&&live){try{const ref=db.collection("users").doc(u.uid);const snap=await ref.get();
+if(!snap.exists)await ref.set({name:u.displayName||(u.email||"").split("@")[0],email:u.email,photo:u.photoURL||"",role:"member",since:Date.now(),bio:""})}catch(e){}}
 route()});
 db.collection("cases").onSnapshot(s=>{usingSamples=s.empty;const all=s.empty?structuredClone(SAMPLES):s.docs.map(d=>({id:d.id,...d.data()}));CASES=all.filter(c=>!c.del);DELETED=all.filter(c=>c.del);if(!/edit/.test(cur))route()},()=>{});
-db.collection("pages").onSnapshot(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));PAGES=a.filter(x=>!x.del);DPAGES=a.filter(x=>x.del);if(!/edit|admin\/settings/.test(cur))route()},()=>{});
-db.collection("site").doc("main").onSnapshot(d=>{SITE={...structuredClone(DEF),...(d.data()||{})};if(!/edit|admin\/settings/.test(cur))route()},()=>{});
-db.collection("users").onSnapshot(s=>{USERS=s.docs.map(d=>({id:d.id,...d.data()}));rr()},()=>{})}
+db.collection("users").onSnapshot(s=>{USERS={};s.docs.forEach(d=>USERS[d.id]=d.data());if(!/edit|panel|profile/.test(cur))route()},()=>{});
+db.collection("proposals").onSnapshot(s=>{PROPOSALS=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.at-a.at);if(!/edit|panel|profile/.test(cur))route()},()=>{});
+db.collection("pages").onSnapshot(s=>{PAGES=s.docs.map(d=>({id:d.id,...d.data()}));if(!/edit|admin/.test(cur))route()},()=>{});
+db.collection("site").doc("main").onSnapshot(d=>{SITE={...structuredClone(DEF),...(d.data()||{})};if(!/edit|admin/.test(cur))route()},()=>{})}
 else loadLocal();
 route();
 </script></body></html>
