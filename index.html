@@ -73,26 +73,40 @@ footer{border-top:1px solid var(--bd);margin-top:40px;padding:12px 0 30px;color:
 
 :root{--pn:#f6f7f8;--ok:#2e7d32;--wn:#b45f00;--er:#c62828}
 @media(prefers-color-scheme:dark){:root{--pn:#1b1b1b;--ok:#6fcf74;--wn:#f0a040;--er:#ff7b72}}
-.isadm header,.isadm footer{display:none}.isadm main{max-width:none;padding:0}
-.adm{--aa:#3366cc;display:grid;grid-template-columns:232px minmax(0,1fr);min-height:100vh;background:var(--bg);color:var(--fg);font-size:14px}
-.adm.dk{--bg:#14161a;--fg:#e6e6e6;--mut:#9aa0a6;--bd:#33373d;--link:#8ab4f8;--pn:#1c1f24;--ok:#6fcf74;--wn:#f0a040;--er:#ff7b72}
-.adm.lt{--bg:#fff;--fg:#202122;--mut:#72777d;--bd:#c8ccd1;--link:#0645ad;--pn:#f6f7f8;--ok:#2e7d32;--wn:#b45f00;--er:#c62828}
-.sb{background:var(--pn);border-right:1px solid var(--bd);padding:14px 10px;position:sticky;top:0;height:100vh;overflow:auto}
-.sb a{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;margin:1px 0;color:var(--fg);border-radius:3px}.sb a:hover{background:var(--bd);text-decoration:none}.sb a.on{background:var(--aa);color:#fff}
-.am{padding:8px 26px 40px;min-width:0}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin:12px 0}.card{border:1px solid var(--bd);background:var(--pn);padding:10px 12px;border-radius:3px;color:var(--mut)}.card b{display:block;font:600 1.8rem var(--font);color:var(--fg)}
-.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:22px}.lg{margin:.5em 0}
+/* wider page for the editor and the admin panel */
+.wide .w,.isadm .w{max-width:1240px}
+/* admin panel: a tab strip under the normal site header, same look as the wiki */
+.atabs{display:flex;flex-wrap:wrap;border-bottom:1px solid var(--bd);margin:12px 0 6px;font-size:14px}
+.atabs a{padding:6px 12px;color:var(--fg);border-bottom:2px solid transparent;margin-bottom:-1px}.atabs a:hover{text-decoration:none;background:var(--pn)}.atabs a.on{border-color:var(--acc);font-weight:600}.atabs .chip{margin-left:6px}
+h2.sh{font:400 1.5rem var(--hf);border:0;margin:.8em 0 .3em}
+.stat{color:var(--mut);margin:0 0 12px}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}.lg{margin:.5em 0}
+.hl{list-style:none;padding:0;margin:.3em 0}.hl li{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid var(--bd)}
 .tl{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0;align-items:center}.tl input{min-width:220px}
-.tw{overflow-x:auto}.tb{width:100%;border-collapse:collapse}.tb th{text-align:left;color:var(--mut);font-weight:500}.tb td,.tb th{padding:9px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}.cp .tb td,.cp .tb th{padding:3px 8px}.ac{white-space:nowrap}.ac button,.ac .btn{margin-right:2px}
-.btn{display:inline-block;border:1px solid var(--bd);padding:5px 10px;border-radius:2px;color:var(--fg);background:var(--bg)}.btn:hover{text-decoration:none;border-color:var(--aa)}
-.adm button.sv{background:var(--aa);border-color:var(--aa);color:#fff}button.dn{color:var(--er);border-color:var(--er)}
-.chip{display:inline-block;border:1px solid currentColor;border-radius:9px;padding:0 8px;font-size:12px;line-height:18px;color:var(--mut)}.sb .chip{color:inherit}
+.tw{overflow-x:auto}.tb{width:100%;border-collapse:collapse}.tb th{text-align:left;color:var(--mut);font-weight:500}.tb td,.tb th{padding:8px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}.cp .tb td,.cp .tb th{padding:3px 8px}.ac{white-space:nowrap}.ac button,.ac .btn{margin-right:2px}.tb .dot{margin-left:0}
+.btn{display:inline-block;border:1px solid var(--bd);padding:5px 10px;border-radius:2px;color:var(--fg);background:var(--bg)}.btn:hover{text-decoration:none;border-color:var(--acc)}
+button.dn{color:var(--er);border-color:var(--er)}
+.bulk{display:none;gap:8px;align-items:center;flex-wrap:wrap;background:var(--pn);border:1px solid var(--bd);padding:6px 10px;margin:0 0 8px}.bulk.on{display:flex}
+.chip{display:inline-block;border:1px solid currentColor;border-radius:9px;padding:0 8px;font-size:12px;line-height:18px;color:var(--mut)}
 .c-pending{color:var(--wn)}.c-approved,.c-active{color:var(--ok)}.c-rejected,.c-disabled{color:var(--er)}.c-founder{color:#8e44ad}.c-editor{color:#2f7fd1}
 .avt{display:inline-flex;align-items:center;justify-content:center;border-radius:50%;object-fit:cover;background:var(--bd);flex:none;vertical-align:middle}
 .df td{white-space:pre-wrap;word-break:break-word;vertical-align:top}.df .o{background:#c6282818}.df .n{background:#2e7d3218}
 .ph{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin:12px 0}.er{color:var(--er)}
 #toast{display:none;position:fixed;right:16px;bottom:16px;z-index:9999;background:var(--fg);color:var(--bg);padding:9px 14px;border-radius:3px;max-width:80vw}#toast.er{background:var(--er);color:#fff}
-@media(max-width:800px){.adm{grid-template-columns:1fr}.sb{position:static;height:auto}.am{padding:8px 14px}}
+/* editor: form on the left, live preview on the right */
+.edbar{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--bd);margin:0 0 12px;padding:8px 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.edbar h1{border:0;margin:0;font-size:1.4rem;flex:1;min-width:150px}
+.edstate{font-size:13px;color:var(--mut)}
+.edgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:26px;align-items:start}
+.edpane{position:sticky;top:60px;max-height:calc(100vh - 76px);overflow:auto;border:1px solid var(--bd);padding:0 16px 16px}
+.edpane a{pointer-events:none}
+.tbar{display:flex;flex-wrap:wrap;gap:3px;margin:10px 0 2px}.tbar button{padding:1px 8px;font-size:13px}
+.qs{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0 0}.qs button{border-radius:9px;padding:0 9px;font-size:12px}
+.chk{list-style:none;padding:0;margin:6px 0}.chk li{padding:3px 0 3px 22px;position:relative;font-size:14px}.chk li::before{content:"\2713";position:absolute;left:2px;color:var(--ok);font-weight:700}
+.chk li.bad::before{content:"!";color:var(--wn)}.chk li.opt::before{content:"\2022";color:var(--mut)}.chk small{display:block;color:var(--mut)}
+.draftnote{background:var(--pn);border:1px solid var(--bd);padding:6px 10px;font-size:13px;margin:0 0 10px}
+.vtog{display:none}
+@media(max-width:1000px){.edgrid{grid-template-columns:1fr}.edpane{position:static;max-height:none}.vtog{display:inline-block}.edgrid.showprev>.fm{display:none}.edgrid:not(.showprev)>.edpane{display:none}}
 </style><base target="_blank">
 </head><body>
 <header><div class="w"><div class="row"><a class="logo" href="#/" id="logo"></a>
@@ -193,12 +207,12 @@ return{mark,filter:f=>Ms.forEach(x=>{const on=!f||f(x);if(on){if(!map.hasLayer(x
 const pins=()=>CASES.filter(c=>isFinite(c.lat)&&isFinite(c.lon)&&c.lat!==null&&c.lon!==null).map(c=>({c,lat:+c.lat,lon:+c.lon,color:COL(c.status),st:SKEY(c.status),yr:c.year}));
 // ---------- image / nav editors ----------
 const shrink=(file,max=900)=>new Promise(r=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.75))};im.onerror=()=>r(null);im.src=fr.result};fr.readAsDataURL(file)});
-function imgEd(box,arr,max=99){const draw=()=>{box.innerHTML=arr.map((m,i)=>`<div class="ie"><img src="${esc(m.src)}" alt=""><div><input data-c="${i}" value="${esc(m.cap)}" placeholder="Caption"> <button type="button" data-u="${i}">↑</button> <button type="button" data-r="${i}">Remove</button> <span class="mut">[img ${i+1}]</span></div></div>`).join("")+(arr.length<max?`<div class="mut">Add image: <input type="file" accept="image/*" multiple> or URL <input class="url" placeholder="https://…" size="20"> <button type="button" data-a="1">Add</button></div>`:"");
-box.querySelectorAll("[data-c]").forEach(i=>i.oninput=()=>arr[i.dataset.c].cap=i.value);
-box.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>{const i=+b.dataset.u;if(i>0){[arr[i-1],arr[i]]=[arr[i],arr[i-1]];draw()}});
-box.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{arr.splice(+b.dataset.r,1);draw()});
-const fi=box.querySelector("input[type=file]");if(fi)fi.onchange=async()=>{for(const f of fi.files){const s=await shrink(f);if(s)arr.push({src:s,cap:""})}while(arr.length>max)arr.shift();draw()};
-const ab=box.querySelector("[data-a]");if(ab)ab.onclick=()=>{const u=box.querySelector(".url").value.trim();if(u){arr.push({src:u,cap:""});while(arr.length>max)arr.shift();draw()}}};draw()}
+function imgEd(box,arr,max=99,cb=()=>{}){const draw=()=>{box.innerHTML=arr.map((m,i)=>`<div class="ie"><img src="${esc(m.src)}" alt=""><div><input data-c="${i}" value="${esc(m.cap)}" placeholder="Caption"> <button type="button" data-u="${i}">↑</button> <button type="button" data-r="${i}">Remove</button> <span class="mut">[img ${i+1}]</span></div></div>`).join("")+(arr.length<max?`<div class="mut">Add image: <input type="file" accept="image/*" multiple> or URL <input class="url" placeholder="https://…" size="20"> <button type="button" data-a="1">Add</button></div>`:"");
+box.querySelectorAll("[data-c]").forEach(i=>i.oninput=()=>{arr[i.dataset.c].cap=i.value;cb()});
+box.querySelectorAll("[data-u]").forEach(b=>b.onclick=()=>{const i=+b.dataset.u;if(i>0){[arr[i-1],arr[i]]=[arr[i],arr[i-1]];draw();cb()}});
+box.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{arr.splice(+b.dataset.r,1);draw();cb()});
+const fi=box.querySelector("input[type=file]");if(fi)fi.onchange=async()=>{for(const f of fi.files){const s=await shrink(f);if(s)arr.push({src:s,cap:""})}while(arr.length>max)arr.shift();draw();cb()};
+const ab=box.querySelector("[data-a]");if(ab)ab.onclick=()=>{const u=box.querySelector(".url").value.trim();if(u){arr.push({src:u,cap:""});while(arr.length>max)arr.shift();draw();cb()}}};draw()}
 function navEd(box,arr){const opts=n=>[...Object.entries(BUILTIN),...PAGES.map(p=>["page:"+p.id,"Page: "+p.title]),...(n.t=="__new"?[["__new","(new blank page)"]]:[])];
 const draw=()=>{box.innerHTML=arr.map((n,i)=>`<div class="ne"><input data-l="${i}" value="${esc(n.l)}"> <select data-t="${i}">${opts(n).map(([k,v])=>`<option value="${esc(k)}" ${n.t==k?"selected":""}>${esc(v)}</option>`).join("")}</select> <button type="button" data-u="${i}">↑</button><button type="button" data-d="${i}">↓</button><button type="button" data-x="${i}">Remove</button></div>`).join("")+`<button type="button" data-add="1">+ Add tab</button>`;
 box.querySelectorAll("[data-l]").forEach(i=>i.oninput=()=>arr[i.dataset.l].l=i.value);box.querySelectorAll("[data-t]").forEach(i=>i.onchange=()=>arr[i.dataset.t].t=i.value);
@@ -207,6 +221,72 @@ box.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{const i=+b.dataset.d;
 box.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>{arr.splice(+b.dataset.x,1);draw()});
 box.querySelector("[data-add]").onclick=()=>{arr.push({l:"New tab",t:"__new"});draw()}};draw()}
 let DRAFT=[],DNAV=[],DLOGO=[],DBAN=[];
+// ---------- editor and admin helpers ----------
+const REGIONS=["Avalon Peninsula","Burin Peninsula","Eastern","Central","West Coast","Northern Peninsula","Labrador"];
+const STS=["Unsolved","Under investigation","Charged","Convicted","Acquitted"];
+const hasGeo=c=>c.lat!=null&&c.lon!=null&&c.lat!==""&&c.lon!==""&&isFinite(c.lat)&&isFinite(c.lon);
+const LOADED=/\b(brutal(?:ly)?|gruesome|savage(?:ly)?|monster|fiend|sadistic|horrific|heinous|grisly|bloodbath|cold-blooded|slaughter(?:ed)?|butcher(?:ed)?|psycho)\b/gi,GUILT=/\b(the )?(murderer|killer|slayer)\b/i;
+function toneIssues(c){const t=[c.summary,c.background,c.investigation,c.legal,c.more].join("\n"),out=[],w=[...new Set((t.match(LOADED)||[]).map(x=>x.toLowerCase()))];
+if(w.length)out.push("Loaded wording: "+w.join(", "));if(SKEY(c.status)!="convicted"&&GUILT.test(t))out.push("Says “killer” or “murderer” but the status is not Convicted");return out}
+function edChecks(c){const n=(c.refs||[]).length,tone=toneIssues(c);return[
+{ok:(c.summary||"").trim().length>=60,t:"Summary written",d:"A neutral opening of a sentence or two."},
+{ok:n>=2,t:"At least two references",d:n+" listed."},
+{ok:hasGeo(c),t:"Map point set",d:"Click the map or type coordinates."},
+{ok:!tone.length,t:"Neutral wording",d:tone.join(". ")},
+{ok:!!(c.images&&c.images.length),t:"Has an image (optional)",d:"Only add images you have the right to use.",opt:1}]}
+const HC=[["src","Fewer than two references",c=>(c.refs||[]).filter(Boolean).length<2],["sum","Summary missing or very short",c=>(c.summary||"").trim().length<60],["geo","No map point",c=>!hasGeo(c)],["tone","Loaded or guilt-implying wording",c=>toneIssues(c).length>0],["old","Not edited for over a year",c=>!!c.updated&&Date.now()-c.updated>365*864e5]];
+function downloadFile(name,text,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),5000)}
+const csvCell=v=>{v=v==null?"":String(v);return /[",\n\r]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v},toCSV=rows=>rows.map(r=>r.map(csvCell).join(",")).join("\r\n");
+function parseCSV(t){t=t.replace(/^\uFEFF/,"");const rows=[];let r=[],v="",q=false;for(let i=0;i<t.length;i++){const ch=t[i];if(q){if(ch=='"'){if(t[i+1]=='"'){v+='"';i++}else q=false}else v+=ch}else if(ch=='"')q=true;else if(ch==","){r.push(v);v=""}else if(ch=="\n"||ch=="\r"){if(ch=="\r"&&t[i+1]=="\n")i++;r.push(v);v="";if(r.length>1||r[0]!=="")rows.push(r);r=[]}else v+=ch}
+if(v!==""||r.length){r.push(v);rows.push(r)}return rows}
+const caseCSV=()=>[["name","year","month","place","region","status","latitude","longitude","summary","sources"],...sorted().map(c=>[c.name,c.year,c.month,c.place,c.region,c.status,c.lat??"",c.lon??"",c.summary,(c.refs||[]).join(" | ")])];
+/* the article layout, shared by the public page and the editor preview (same markup as before) */
+function artHTML(c){const ex=(c.extra||"").split("\n").filter(l=>l.includes(":")).map(l=>{const i=l.indexOf(":");return`<tr><th>${esc(l.slice(0,i).trim())}</th><td>${esc(l.slice(i+1).trim())}</td></tr>`}).join("");
+const body=`<p>${esc(c.summary)}</p>`+[["Background",c.background],["Investigation",c.investigation],["Legal proceedings",c.legal]].map(([h,t])=>t?`<h2>${h}</h2><p>${esc(t)}</p>`:"").join("");
+return`${NOTE()}
+<table class="info"><caption>${esc(c.name)}</caption>${c.images&&c.images[0]?`<tr><td colspan="2" style="padding:0"><img src="${esc(c.images[0].src)}" alt="${esc(c.images[0].cap)}"></td></tr>`:""}<tr><th>Date</th><td>${MON[c.month-1]} ${c.year}</td></tr><tr><th>Location</th><td>${esc(c.place)}</td></tr><tr><th>Region</th><td>${esc(c.region)}</td></tr><tr><th>Status</th><td>${esc(c.status)}</td></tr>${ex}${c.updated?`<tr><th>Updated</th><td>${new Date(c.updated).toLocaleDateString()}</td></tr>`:""}</table>
+${body}${rich(c.more,c.images||[],1)}<h2>References</h2><ol>${(c.refs||[]).map(r=>`<li>${esc(r)}</li>`).join("")}</ol>
+<div class="bar" style="clear:both">Categories: <a href="#/cases">${c.year}</a> · <a href="#/locations">${esc(c.region)}</a> · ${esc(c.status)}</div>`}
+const TB=(k,img=true)=>`<div class="tbar" data-for="${k}"><button type="button" data-k="b" title="Bold"><b>B</b></button><button type="button" data-k="i" title="Italic"><i>I</i></button><button type="button" data-k="h" title="Section heading">Heading</button><button type="button" data-k="ul" title="Bullet list">List</button><button type="button" data-k="link" title="Link to a web page">Link</button>${img?`<button type="button" data-k="img" title="Place the last image here">Image</button>`:""}</div>`;
+function fmtInsert(ta,k){const s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.slice(s,e),m={b:"**"+(sel||"bold text")+"**",i:"*"+(sel||"italic text")+"*",h:"\n## "+(sel||"Heading")+"\n",ul:"\n- "+(sel||"Item")+"\n",link:"["+(sel||"link text")+"](https://)",img:"[img "+Math.max(1,DRAFT.length)+"]"};ta.setRangeText(m[k],s,e,"end");ta.dispatchEvent(new Event("input",{bubbles:true}));ta.focus()}
+const wireTb=F=>F.querySelectorAll(".tbar").forEach(tb=>tb.querySelectorAll("button").forEach(b=>b.onclick=()=>fmtInsert(F.elements[tb.dataset.for],b.dataset.k)));
+function restoreDraft(F,key,after){try{const d=JSON.parse(localStorage.getItem(key)||"null");if(!d)return;let diff=false;
+for(const k in d){const el=F.elements[k];if(el&&el.type!="file"&&el.type!="checkbox"&&el.value!==d[k]){el.value=d[k];diff=true}}
+if(F.elements.feat){const w="feat" in d;if(F.elements.feat.checked!==w){F.elements.feat.checked=w;diff=true}}
+if(diff){$("#draftnote").innerHTML=`<p class="draftnote">Restored your unsaved draft from this browser. <a id="discard">Discard it and load the saved version</a></p>`;$("#discard").onclick=()=>{try{localStorage.removeItem(key)}catch(e){}route()}}}catch(e){}}
+function hookEdit(id){const F=$("#ef"),I=n=>F.elements[n],msg=$("#msg"),stx=$("#edstate"),btn=$("#save"),DK="nlmw-draft-"+(id||"new"),ex=CASES.find(x=>x.id==id);let timer=null;
+const collect=()=>{const f=Object.fromEntries(new FormData(F)),la=parseFloat(f.lat),lo=parseFloat(f.lon);return{name:(f.name||"").trim().replace(/\s+/g," "),year:+f.year||new Date().getFullYear(),month:+f.month||1,place:(f.place||"").trim(),region:(f.region||"").trim(),status:(f.status||"").trim(),feat:+!!f.feat,lat:isFinite(la)?la:null,lon:isFinite(lo)?lo:null,summary:f.summary||"",background:f.background||"",investigation:f.investigation||"",legal:f.legal||"",more:f.more||"",extra:f.extra||"",refs:(f.refs||"").split("\n").map(s=>s.trim()).filter(Boolean),images:DRAFT}};
+const paint=()=>{const pv=$("#pv");if(!pv)return;const c=collect();pv.innerHTML=`<h1>${esc(c.name||"Untitled article")}</h1>`+artHTML({...c,updated:ex?ex.updated:null});$("#chk").innerHTML=edChecks(c).map(k=>`<li class="${k.ok?"":k.opt?"opt":"bad"}">${k.t}${!k.ok&&k.d?`<small>${esc(k.d)}</small>`:""}</li>`).join("")};
+const sched=()=>{clearTimeout(timer);timer=setTimeout(paint,250)},dirty=()=>{stx.textContent="Unsaved changes · draft kept in this browser";window.onbeforeunload=()=>"";sched()};
+imgEd($("#ie"),DRAFT,99,dirty);restoreDraft(F,DK);
+F.addEventListener("input",()=>{try{localStorage.setItem(DK,JSON.stringify(Object.fromEntries(new FormData(F))))}catch(e){}dirty()});
+wireTb(F);
+document.querySelectorAll("#qs button").forEach(b=>b.onclick=()=>{I("status").value=b.dataset.s;I("status").dispatchEvent(new Event("input",{bubbles:true}))});
+const map=mapInit(F.querySelector(".mapbox"),{pick:(la,lo)=>{I("lat").value=la.toFixed(4);I("lon").value=lo.toFixed(4);I("lon").dispatchEvent(new Event("input",{bubbles:true}))},marker:EDITING.lat!=null&&EDITING.lon!=null?{lat:+EDITING.lat,lon:+EDITING.lon}:null,pins:[]});
+const mv=()=>{const a=parseFloat(I("lat").value),b=parseFloat(I("lon").value);if(isFinite(a)&&isFinite(b))map.mark(a,b)};I("lat").addEventListener("input",mv);I("lon").addEventListener("input",mv);
+I("place").addEventListener("change",()=>{const g=PLACES.find(x=>x[0].toLowerCase()==I("place").value.trim().toLowerCase());if(g){I("region").value=g[1];I("lat").value=g[2];I("lon").value=g[3];mv();I("lon").dispatchEvent(new Event("input",{bubbles:true}))}});
+$("#vtog").onclick=()=>{const g=$("#edgrid").classList.toggle("showprev");$("#vtog").textContent=g?"Back to writing":"Preview";if(g)paint()};
+F.onkeydown=e=>{if(e.key=="Enter"&&e.target.tagName=="INPUT"&&!["file","checkbox"].includes(e.target.type))e.preventDefault();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=="s"){e.preventDefault();btn.click()}};
+btn.onclick=async()=>{if(!F.reportValidity())return;const f=collect(),nid=id||(slug(f.name)+"-"+f.year);
+if(!id&&CASES.some(c=>c.id===nid)){msg.textContent="An article with this name and year already exists. Change the name or year.";msg.className="er";return}
+const o={...f,updated:Date.now()};btn.disabled=true;msg.className="mut";msg.textContent="Saving…";
+try{const now=await commit("cases",nid,o);try{localStorage.removeItem(DK)}catch(e){}window.onbeforeunload=null;if(now){toast("Saved.");go("#/case/"+nid)}else{toast("Proposal submitted for review.");go("#/profile/"+user.uid)}}catch(x){msg.className="er";msg.textContent="Save failed: "+x.message}finally{btn.disabled=false}};
+paint()}
+function hookEditPage(id){const F=$("#pf"),msg=$("#msg"),stx=$("#edstate"),btn=$("#save"),DPK="nlmw-draft-page-"+(id||"new");let timer=null;
+const paint=()=>{const pv=$("#pv");if(!pv)return;const f=Object.fromEntries(new FormData(F));pv.innerHTML=`<h1>${esc(f.title||"Untitled page")}</h1>`+rich(f.body||"",DRAFT)};
+const sched=()=>{clearTimeout(timer);timer=setTimeout(paint,250)},dirty=()=>{stx.textContent="Unsaved changes · draft kept in this browser";window.onbeforeunload=()=>"";sched()};
+imgEd($("#ie"),DRAFT,99,dirty);restoreDraft(F,DPK);
+F.addEventListener("input",()=>{try{localStorage.setItem(DPK,JSON.stringify(Object.fromEntries(new FormData(F))))}catch(e){}dirty()});
+wireTb(F);
+$("#vtog").onclick=()=>{const g=$("#edgrid").classList.toggle("showprev");$("#vtog").textContent=g?"Back to writing":"Preview";if(g)paint()};
+twoStep($("#delp"),async()=>{if(!canEdit()){await propose("pages",id,"delete");toast("Deletion proposed for review.");return go("#/profile/"+user.uid)}await remove("pages",id);SITE.nav=SITE.nav.filter(n=>n.t!="page:"+id);await saveSite({nav:SITE.nav});logA("Deleted page "+id,id);go("#/admin/pages")});
+F.onkeydown=e=>{if(e.key=="Enter"&&e.target.tagName=="INPUT"&&!["file","checkbox"].includes(e.target.type))e.preventDefault();if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()=="s"){e.preventDefault();btn.click()}};
+btn.onclick=async()=>{if(!F.reportValidity())return;const f=Object.fromEntries(new FormData(F));let nid=id;
+if(!nid){const used=k=>PAGES.concat(DPAGES).some(x=>x.id==k);nid=f.slug?slug(f.slug):slug(f.title);if(f.slug&&used(nid)){msg.className="er";msg.textContent="That page address is already used. Choose another.";return}while(used(nid))nid+="-2"}
+btn.disabled=true;msg.className="mut";msg.textContent="Saving…";
+try{const ex=PAGES.find(x=>x.id==id)||{},now=await commit("pages",nid,{title:f.title,body:f.body,images:DRAFT,updated:Date.now(),draft:canEdit()?(f.pub?0:1):(ex.draft||0)});try{localStorage.removeItem(DPK)}catch(e){}window.onbeforeunload=null;
+if(now){if(!id&&f.tab)await saveSite({nav:[...SITE.nav,{l:f.title,t:"page:"+nid}]});toast("Saved.");go("#/page/"+nid)}else{toast("Proposal submitted for review.");go("#/profile/"+user.uid)}}catch(x){msg.className="er";msg.textContent="Save failed: "+x.message}finally{btn.disabled=false}};
+paint()}
 // ---------- pages ----------
 const R={
 home(){const H=SITE.home||{};return`<h1>${esc(SITE.title)}</h1>${EL("#/admin/settings")}${SITE.banner?`<img class="banner" src="${esc(SITE.banner)}" alt="">`:""}${rich(SITE.tagline)}<p class="mut">${CASES.length} articles.</p>${NOTE()}
@@ -222,33 +302,33 @@ locations(){const rg=[...new Set(CASES.map(c=>c.region))].sort();return`<h1>Loca
 search(q){q=(q||"").trim();const t=q.toLowerCase().split(/\s+/).filter(Boolean);const m=x=>t.every(w=>x.toLowerCase().includes(w));
 const a=t.length?CASES.filter(c=>m([c.name,c.year,MON[c.month-1],c.place,c.region,c.status,c.summary,c.background,c.investigation,c.legal,c.more,c.extra].join(" "))):[],b=t.length?PAGES.filter(p=>(!p.draft||canEdit())&&m(p.title+" "+p.body)):[];
 return`<h1>Search</h1>`+(q?`<p class="mut">${a.length+b.length} result(s) for “${esc(q)}”</p>`+a.map(c=>`<p>${link(c)}<br><span class="mut">${MON[c.month-1]} ${c.year}, ${esc(c.place)}, ${esc(c.status)}</span><br>${esc(c.summary)}</p>`).join("")+b.map(p=>`<p><a href="#/page/${p.id}">${esc(p.title)}</a><br><span class="mut">Page</span></p>`).join(""):`<p class="mut">Search names, dates, locations, pages and article text.</p>`)},
-case(id){const c=CASES.find(x=>x.id==id);if(!c)return`<h1>No such article</h1>`;const ex=(c.extra||"").split("\n").filter(l=>l.includes(":")).map(l=>{const i=l.indexOf(":");return`<tr><th>${esc(l.slice(0,i).trim())}</th><td>${esc(l.slice(i+1).trim())}</td></tr>`}).join("");
-const body=`<p>${esc(c.summary)}</p>`+[["Background",c.background],["Investigation",c.investigation],["Legal proceedings",c.legal]].map(([h,t])=>t?`<h2>${h}</h2><p>${esc(t)}</p>`:"").join("");
-return`<h1>${esc(c.name)}</h1>${canEdit()?`<p class="mut"><a href="#/edit/${c.id}">Edit</a> · <a id="clone">Clone</a> · <a id="del">Delete</a></p>`:canProp()?`<p class="mut"><a href="#/edit/${c.id}">Propose edit</a> · <a id="del">Propose deletion</a></p>`:""}${NOTE()}
-<table class="info"><caption>${esc(c.name)}</caption>${c.images&&c.images[0]?`<tr><td colspan="2" style="padding:0"><img src="${esc(c.images[0].src)}" alt="${esc(c.images[0].cap)}"></td></tr>`:""}<tr><th>Date</th><td>${MON[c.month-1]} ${c.year}</td></tr><tr><th>Location</th><td>${esc(c.place)}</td></tr><tr><th>Region</th><td>${esc(c.region)}</td></tr><tr><th>Status</th><td>${esc(c.status)}</td></tr>${ex}${c.updated?`<tr><th>Updated</th><td>${new Date(c.updated).toLocaleDateString()}</td></tr>`:""}</table>
-${body}${rich(c.more,c.images||[],1)}<h2>References</h2><ol>${(c.refs||[]).map(r=>`<li>${esc(r)}</li>`).join("")}</ol>
-<div class="bar" style="clear:both">Categories: <a href="#/cases">${c.year}</a> · <a href="#/locations">${esc(c.region)}</a> · ${esc(c.status)}</div>`},
+case(id){const c=CASES.find(x=>x.id==id);if(!c)return`<h1>No such article</h1>`;
+return`<h1>${esc(c.name)}</h1>${canEdit()?`<p class="mut"><a href="#/edit/${c.id}">Edit</a> · <a id="clone">Clone</a> · <a id="del">Delete</a></p>`:canProp()?`<p class="mut"><a href="#/edit/${c.id}">Propose edit</a> · <a id="del">Propose deletion</a></p>`:""}${artHTML(c)}`},
 edit(id){if(!canEdit()&&!canProp())return`<h1>Edit</h1><p>Sign in with the editor's Google account to edit.</p>`;
-let c=CASES.find(x=>x.id==id)||{year:new Date().getFullYear(),month:1,refs:[],images:[],lat:NEWAT?NEWAT.lat:null,lon:NEWAT?NEWAT.lon:null};NEWAT=null;
-if(CLONE){const o=CASES.find(x=>x.id==CLONE);CLONE=null;if(o)c={...structuredClone(o),name:o.name+" (copy)",images:structuredClone(o.images||[])}}
+const now=new Date();let c=CASES.find(x=>x.id==id)||{year:now.getFullYear(),month:now.getMonth()+1,refs:[],images:[],lat:NEWAT?NEWAT.lat:null,lon:NEWAT?NEWAT.lon:null};NEWAT=null;
+if(CLONE){const o=CASES.find(x=>x.id==CLONE);CLONE=null;if(o){c={...structuredClone(o),name:o.name+" (copy)",feat:0};delete c.id;delete c.updated}}
 EDITING=c;DRAFT=structuredClone(c.images||[]);
-const T=(k,l,r)=>`<label>${l}</label><textarea name="${k}" ${r||""}>${esc(c[k])}</textarea>`;
-return`<h1>${c.id?"Edit":"New"} article</h1>${PN()}<form class="f" id="ef"><label>Name</label><input name="name" required value="${esc(c.name)}">
-<div class="two"><div><label>Year</label><input name="year" type="number" required value="${c.year}"></div><div><label>Month</label><select name="month">${MON.map((m,i)=>`<option value="${i+1}" ${c.month==i+1?"selected":""}>${m}</option>`).join("")}</select></div></div>
-<div class="two"><div><label>Community (pick from list to auto-place on the map)</label><input name="place" list="pl" required value="${esc(c.place)}"><datalist id="pl">${PLACES.map(p=>`<option value="${esc(p[0])}">`).join("")}</datalist></div><div><label>Region</label><input name="region" required value="${esc(c.region)}"></div></div>
-<label>Status (e.g. Unsolved, Charged, Convicted, Acquitted)</label><input name="status" required value="${esc(c.status)}">
-<label>Map point: click the map, or type coordinates</label><div class="pk">${mapHTML()}</div><div class="two"><div><label>Latitude</label><input name="lat" value="${c.lat??""}"></div><div><label>Longitude</label><input name="lon" value="${c.lon??""}"></div></div>
-<label><input type="checkbox" name="feat" ${c.feat?"checked":""}> Featured case (shown on the home page)</label>${T("summary","Summary")}${T("background","Background")}${T("investigation","Investigation")}${T("legal","Legal proceedings")}
-${T("more","More sections (## Heading, - bullets, **bold**, [img 1] places picture 1 here)")}${T("extra","Extra infobox rows (one per line, Label: value)")}
-<label>Images (first one appears in the infobox)</label><div id="ie"></div>
-<label>References (one per line)</label><textarea name="refs">${esc((c.refs||[]).join("\n"))}</textarea>
-<p><button type="button" class="sv">${canEdit()?"Save":"Submit proposal"}</button> <a href="#/cases">Cancel</a></p><p class="mut" id="msg"></p></form>`},
+const T=(k,l,h,hint,tb)=>`<label for="f_${k}">${l}</label>${tb?TB(k):""}<textarea id="f_${k}" name="${k}" style="min-height:${h}px">${esc(c[k])}</textarea>${hint?`<p class="mut">${hint}</p>`:""}`;
+return`<form class="f" id="ef" autocomplete="off"><div class="edbar"><h1>${c.id?"Edit":"New"} article</h1><span class="edstate" id="edstate"></span><button type="button" class="vtog" id="vtog">Preview</button><button type="button" class="sv" id="save">${canEdit()?"Save":"Submit proposal"}</button><a href="${c.id?"#/case/"+c.id:"#/cases"}">Cancel</a></div>
+${PN()}<div id="draftnote"></div><div class="edgrid" id="edgrid"><div class="fm">
+<h2>Basics</h2><label for="f_name">Name</label><input id="f_name" name="name" required value="${esc(c.name)}">
+<div class="two"><div><label for="f_year">Year</label><input id="f_year" name="year" type="number" required value="${c.year}"></div><div><label for="f_month">Month</label><select id="f_month" name="month">${MON.map((m,i)=>`<option value="${i+1}" ${c.month==i+1?"selected":""}>${m}</option>`).join("")}</select></div></div>
+<label for="f_status">Status</label><input id="f_status" name="status" required value="${esc(c.status)}"><div class="qs" id="qs">${STS.map(s=>`<button type="button" data-s="${s}">${s}</button>`).join("")}</div><p class="mut">Use “Charged” until a court has decided. Only court outcomes are stated as fact.</p>
+<label><input type="checkbox" name="feat" ${c.feat?"checked":""}> Featured case (shown on the home page)</label>
+<h2>Place</h2><div class="two"><div><label for="f_place">Community (pick from the list to place it on the map)</label><input id="f_place" name="place" list="pl" required value="${esc(c.place)}"><datalist id="pl">${PLACES.map(p=>`<option value="${esc(p[0])}">`).join("")}</datalist></div><div><label for="f_region">Region</label><input id="f_region" name="region" list="rgl" required value="${esc(c.region)}"><datalist id="rgl">${REGIONS.map(r=>`<option value="${r}">`).join("")}</datalist></div></div>
+<label>Map point: click the map, or type coordinates. A general area is enough, never a home address.</label><div class="pk">${mapHTML()}</div><div class="two"><div><label for="f_lat">Latitude</label><input id="f_lat" name="lat" value="${c.lat??""}"></div><div><label for="f_lon">Longitude</label><input id="f_lon" name="lon" value="${c.lon??""}"></div></div>
+<h2>Text</h2>${T("summary","Summary",90,"Plain text, shown as one paragraph.")}${T("background","Background",90)}${T("investigation","Investigation",90)}${T("legal","Legal proceedings",90,"Background, Investigation and Legal proceedings are plain text shown as one paragraph each. For several paragraphs, headings or lists use More sections.")}
+${T("more","More sections",130,"## Heading, - bullets, **bold**, *italic*, [text](https://link), [img 1] places picture 1 here.",1)}${T("extra","Extra infobox rows (one per line, Label: value)",60)}
+<h2>Sources</h2><label for="f_refs">References (one per line)</label><textarea id="f_refs" name="refs" style="min-height:100px">${esc((c.refs||[]).join("\n"))}</textarea><p class="mut">Include the publisher, date and a link where possible.</p>
+<h2>Images</h2><p class="mut">The first image appears in the infobox.</p><div id="ie"></div><p class="mut" id="msg" role="alert"></p></div>
+<aside class="edpane"><h2>Checklist</h2><ul class="chk" id="chk"></ul><h2>Preview</h2><div id="pv"></div></aside></div></form>`},
 page(id){const p=PAGES.find(x=>x.id==id);if(!p||(p.draft&&!canEdit()))return`<h1>No such page</h1>`;return`<h1>${esc(p.title)}</h1>${canEdit()||canProp()?`<p class="mut">${p.draft?"Draft (hidden from visitors) · ":""}<a href="#/editpage/${p.id}">${canEdit()?"[Edit this page]":"[Propose edit]"}</a></p>`:""}${rich(p.body,p.images||[])}`},
 editpage(id){if(!canEdit()&&!canProp())return`<h1>Edit</h1><p>Sign in with the editor's Google account to edit.</p>`;const p=PAGES.find(x=>x.id==id)||{title:"",body:"",images:[]};EDITING=p;DRAFT=structuredClone(p.images||[]);
-return`<h1>${p.id?"Edit":"New"} page</h1>${PN()}<form class="f" id="pf"><label>Title</label><input name="title" required value="${esc(p.title)}">${p.id?`<p class="mut">Page address: #/page/${esc(p.id)}</p>`:`<label>Page address (lowercase letters, numbers and dashes; leave blank to build it from the title)</label><input name="slug" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="60">`}
-<label>Text (## Heading, - bullets, **bold**, *italic*, [text](https://link), [img 1] places picture 1 here)</label><textarea name="body" style="min-height:240px">${esc(p.body)}</textarea>
-<label>Images</label><div id="ie"></div>${p.id||!canEdit()?"":`<label><input type="checkbox" name="tab" checked> Also add as a tab in the top bar</label>`}${canEdit()?`<label><input type="checkbox" name="pub" ${p.draft?"":"checked"}> Published (visible to everyone)</label>`:""}
-<p><button type="button" class="sv">${canEdit()?"Save":"Submit proposal"}</button> ${p.id?`<a id="delp">${canEdit()?"Delete page":"Propose deletion"}</a> · `:""}<a href="${canEdit()?"#/admin/pages":"#/"}">Cancel</a></p><p class="mut" id="msg"></p></form>`},
+return`<form class="f" id="pf" autocomplete="off"><div class="edbar"><h1>${p.id?"Edit":"New"} page</h1><span class="edstate" id="edstate"></span><button type="button" class="vtog" id="vtog">Preview</button><button type="button" class="sv" id="save">${canEdit()?"Save":"Submit proposal"}</button>${p.id?`<a id="delp">${canEdit()?"Delete page":"Propose deletion"}</a>`:""}<a href="${canEdit()?"#/admin/pages":"#/"}">Cancel</a></div>${PN()}<div id="draftnote"></div>
+<div class="edgrid" id="edgrid"><div class="fm"><label for="f_title">Title</label><input id="f_title" name="title" required value="${esc(p.title)}">${p.id?`<p class="mut">Page address: #/page/${esc(p.id)}</p>`:`<label for="f_slug">Page address (lowercase letters, numbers and dashes; leave blank to build it from the title)</label><input id="f_slug" name="slug" pattern="[a-z0-9]+(-[a-z0-9]+)*" maxlength="60">`}
+<label for="f_body">Text</label>${TB("body")}<textarea id="f_body" name="body" style="min-height:300px">${esc(p.body)}</textarea><p class="mut">## Heading, - bullets, **bold**, *italic*, [text](https://link), [img 1] places picture 1 here.</p>
+<label>Images</label><div id="ie"></div>${p.id||!canEdit()?"":`<label><input type="checkbox" name="tab" checked> Also add as a tab in the top bar</label>`}${canEdit()?`<label><input type="checkbox" name="pub" ${p.draft?"":"checked"}> Published (visible to everyone)</label>`:""}<p class="mut" id="msg" role="alert"></p></div>
+<aside class="edpane"><h2>Preview</h2><div id="pv"></div></aside></div></form>`},
 about(){return`<h1>About</h1>${EL("#/admin/settings")}${rich(SITE.about)}`},
 settings(){if(!canEdit())return`<h1>Customize</h1><p>Sign in with the editor's Google account to customize the site.</p>`;
 DNAV=structuredClone(SITE.nav);DLOGO=SITE.logo?[{src:SITE.logo,cap:""}]:[];DBAN=SITE.banner?[{src:SITE.banner,cap:""}]:[];const t=SITE.theme||{},H=SITE.home||{};
@@ -280,8 +360,8 @@ async function saveSite(o){const n={...SITE,...o};if(tooBig(n))throw new Error("
 // ---------- accounts, roles, proposals, admin panel ----------
 let ME=null,USERS=[],PRIV={},PROPS=[],LOG=[],DPAGES=[],unsub=[],AP={},AS={q:"",st:"",so:"new",rl:"",pu:"",sec:""};
 try{AP=JSON.parse(localStorage.getItem("nlmw-adm"))||{}}catch(e){}
-const rr=()=>{if(/^#\/(admin|profile|proposal)/.test(cur)&&!/edit|settings/.test(cur)&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))route()};
-const rt=()=>/edit/.test(cur)?chrome():route();
+const rr=()=>{if(/^#\/(admin|profile|proposal)/.test(cur)&&!/edit|settings/.test(cur)&&!/INPUT|TEXTAREA|SELECT/.test((document.activeElement||{}).tagName||""))route(true)};
+const rt=()=>/edit/.test(cur)?chrome():route(true);
 const role=()=>!user?"guest":canEdit()?"founder":ME&&ME.status!="disabled"&&ME.role=="editor"?"editor":"member";
 const canProp=()=>role()=="editor";
 const fdt=t=>t?new Date(t).toLocaleString([],{dateStyle:"medium",timeStyle:"short"}):"–";
@@ -308,20 +388,24 @@ const diff=p.act=="delete"?`<p class="note">This proposal asks to delete ${cur?`
 const own=user&&user.uid==p.by;
 return`<h1>${esc(p.title)}</h1><p class="mut">${esc(p.type)} · by ${own&&!adm?"you":`<a href="#/profile/${p.by}">${esc(p.byName)}</a>`} · submitted ${fdt(p.at)} · ${chip(p.status)}${p.reviewedAt?` · reviewed ${fdt(p.reviewedAt)}`:""}</p>${p.note?`<p class="note">Reviewer note: ${esc(p.note)}</p>`:""}${adm&&p.status=="pending"&&cf?`<p class="note er">${esc(cf.m)}</p>`:""}${diff}
 ${adm&&p.status=="pending"?`<div class="f"><label>Review note (required when rejecting)</label><textarea id="rn" maxlength="500"></textarea><p><button class="sv" data-x="ok" data-id="${p.id}">Approve and apply</button> <button class="dn" data-x="no" data-id="${p.id}">Reject</button> <a href="#/admin/proposals">Back</a></p></div>`:`<p><a href="${adm?"#/admin/proposals":"#/profile/"+(user?user.uid:"")}">Back</a></p>`}`}
-const caseRows=()=>{const q=AS.q.toLowerCase(),a=CASES.filter(c=>(!AS.st||c.status==AS.st)&&(!q||[c.name,c.place,c.region,c.status,c.year].join(" ").toLowerCase().includes(q)));
-a.sort(AS.so=="old"?(x,y)=>x.year-y.year||x.month-y.month:AS.so=="name"?(x,y)=>x.name.localeCompare(y.name):AS.so=="upd"?(x,y)=>(y.updated||0)-(x.updated||0):(x,y)=>y.year-x.year||y.month-x.month);
-return a.map(c=>`<tr><td>${th(c)}<a href="#/case/${c.id}">${esc(c.name)}</a>${c.feat?" ★":""}</td><td>${MON[c.month-1].slice(0,3)} ${c.year}</td><td>${esc(c.place)}</td><td><span class="chip" style="color:${COL(c.status)}">${esc(c.status)}</span></td><td class="ac"><a class="btn" href="#/edit/${c.id}">Edit</a> <button data-x="arch" data-id="${c.id}">Archive</button> <button class="dn" data-x="cdel" data-id="${c.id}">Delete</button></td></tr>`).join("")||`<tr><td colspan="5" class="mut">No cases match.</td></tr>`};
+const adminCases=()=>{const q=AS.q.toLowerCase(),hc=HC.find(h=>h[0]==AS.hl),a=CASES.filter(c=>(!AS.st||c.status==AS.st)&&(!AS.rg||c.region==AS.rg)&&(!hc||hc[2](c))&&(!q||[c.name,c.place,c.region,c.status,c.year].join(" ").toLowerCase().includes(q)));
+a.sort(AS.so=="old"?(x,y)=>x.year-y.year||x.month-y.month:AS.so=="name"?(x,y)=>x.name.localeCompare(y.name):AS.so=="upd"?(x,y)=>(y.updated||0)-(x.updated||0):(x,y)=>y.year-x.year||y.month-x.month);return a};
+const caseRows=()=>adminCases().map(c=>`<tr><td><input type="checkbox" data-sel="${esc(c.id)}" ${AS.sel.has(c.id)?"checked":""} aria-label="Select ${esc(c.name)}"></td><td>${th(c)}<a href="#/case/${c.id}">${esc(c.name)}</a>${c.feat?" ★":""}</td><td>${MON[c.month-1].slice(0,3)} ${c.year}</td><td>${esc(c.place)}</td><td><span class="dot" style="background:${COL(c.status)}"></span><select data-qs="${esc(c.id)}" aria-label="Status of ${esc(c.name)}">${[...new Set([...STS,c.status])].filter(Boolean).map(s=>`<option ${s==c.status?"selected":""}>${esc(s)}</option>`).join("")}</select></td><td class="mut">${c.updated?fdd(c.updated):"–"}</td><td class="ac"><a class="btn" href="#/edit/${c.id}">Edit</a> <button data-x="arch" data-id="${c.id}">Archive</button> <button class="dn" data-x="cdel" data-id="${c.id}">Delete</button></td></tr>`).join("")||`<tr><td colspan="7" class="mut">No cases match.</td></tr>`;
 const userRows=()=>{const q=AS.q.toLowerCase();return USERS.filter(u=>(!AS.rl||u.role==AS.rl)&&(!q||((u.name||"")+" "+((PRIV[u.id]||{}).email||"")).toLowerCase().includes(q))).map(u=>{const f=u.role=="founder";return`<tr><td>${av(u)}</td><td><a href="#/profile/${u.id}">${esc(u.name)}</a></td><td>${esc((PRIV[u.id]||{}).email||"–")}</td><td>${chip(u.role||"member")}</td><td>${fdd(u.created)}</td><td>${chip(u.status=="disabled"?"disabled":"active")}</td><td class="ac">${f?'<span class="mut">Protected</span>':`<button data-x="role" data-id="${u.id}">${u.role=="editor"?"Demote to Member":"Promote to Editor"}</button> <button data-x="hist" data-id="${u.id}">Proposals</button> <button data-x="dis" data-id="${u.id}">${u.status=="disabled"?"Enable":"Disable"}</button> <button class="dn" data-x="urm" data-id="${u.id}">Remove</button>`}</td></tr>`}).join("")||`<tr><td colspan="7" class="mut">No users found.</td></tr>`};
 const logRows=()=>{const q=AS.q.toLowerCase();return LOG.filter(l=>!q||(l.action+" "+l.by).toLowerCase().includes(q)).map(l=>`<tr><td>${fdt(l.at)}</td><td>${esc(l.by)}</td><td>${esc(l.action)}</td></tr>`).join("")||`<tr><td colspan="3" class="mut">No entries.</td></tr>`};
-const SECS=[["overview","Overview"],["cases","Case Management"],["pages","Page Management"],["proposals","Proposal Review"],["users","User Management"],["log","Activity Log"],["trash","Deleted Content"],["settings","Website Settings"],["backup","Backup and Restore"]];
+const SECS=[["overview","Overview"],["cases","Cases"],["pages","Pages"],["proposals","Proposals"],["users","Users"],["log","Activity"],["trash","Deleted"],["settings","Settings"],["backup","Backup"]];
 const pend=()=>PROPS.filter(p=>p.status=="pending");
 const tbl=(h,body,n)=>`<div class="tw"><table class="tb"><thead><tr>${h.map(x=>`<th>${x}</th>`).join("")}</tr></thead><tbody id="tb">${body}</tbody></table></div>`;
 const AD={
-overview(){const day=Date.now()-864e5,pe=pend(),cd=[["Published cases",CASES.length],["Registered users",USERS.length],["Editors",USERS.filter(u=>u.role=="editor").length],["Pending proposals",pe.length],["Custom pages",PAGES.length],["Admin actions (24 h)",LOG.filter(l=>l.at>day).length]];
-return`<h1>Overview</h1><div class="cards">${cd.map(([l,n])=>`<div class="card"><b>${n}</b>${l}</div>`).join("")}</div><div class="g3"><div><h2>Recent activity</h2>${LOG.slice(0,8).map(l=>`<p class="lg">${esc(l.action)}<br><span class="mut">${fdt(l.at)} · ${esc(l.by)}</span></p>`).join("")||"<p class=mut>No actions logged yet.</p>"}</div>
-<div><h2>Pending proposals</h2>${pe.slice(0,6).map(p=>`<p class="lg"><a href="#/admin/proposals/${p.id}">${esc(p.title)}</a><br><span class="mut">${esc(p.type)} · ${esc(p.byName)} · ${fdt(p.at)}</span></p>`).join("")||"<p class=mut>Nothing is waiting for review.</p>"}</div>
-<div><h2>Quick actions</h2><p><a class="btn" href="#/edit/">New case</a> <a class="btn" href="#/editpage/">New page</a></p><p><a class="btn" href="#/admin/proposals">Review proposals</a> <a class="btn" href="#/admin/users">Manage users</a></p><p><a class="btn" href="#/admin/backup">Back up now</a> <a class="btn" href="#/admin/settings">Site settings</a></p></div></div>`},
-cases(){const st=[...new Set(CASES.map(c=>c.status))].sort();return`<h1>Case Management <span class="mut">(${CASES.length})</span></h1><div class="tl"><input id="aq" placeholder="Search cases" value="${esc(AS.q)}"><select id="ast"><option value="">All statuses</option>${st.map(s=>`<option ${AS.st==s?"selected":""}>${esc(s)}</option>`).join("")}</select><select id="aso">${[["new","Newest first"],["old","Oldest first"],["name","Name A to Z"],["upd","Recently edited"]].map(([k,v])=>`<option value="${k}" ${AS.so==k?"selected":""}>${v}</option>`).join("")}</select><a class="btn" href="#/edit/">+ New case</a></div>${tbl(["Case","Date","Location","Status",""],caseRows())}`},
+overview(){const pe=pend(),N=CASES.length,ed=USERS.filter(u=>u.role=="editor").length;
+return`<h1>Overview</h1><p class="stat">${N} case${N==1?"":"s"} · ${PAGES.length} page${PAGES.length==1?"":"s"} · ${ed} editor${ed==1?"":"s"} · ${pe.length} proposal${pe.length==1?"":"s"} waiting</p><p><a class="btn" href="#/edit/">+ New case</a> <a class="btn" href="#/editpage/">+ New page</a> <a class="btn" href="#/admin/proposals">Review proposals</a> <a class="btn" href="#/admin/backup">Back up</a></p>
+<div class="g3"><div><h2>Needs attention</h2><ul class="hl">${HC.map(([k,l,f])=>{const n=CASES.filter(f).length;return`<li><span>${n?`<a href="#/admin/cases" data-hl="${k}">${l}</a>`:l}</span><b class="${n?"":"mut"}">${n}</b></li>`}).join("")}</ul><p class="mut">Select a line to list those cases.</p></div>
+<div><h2>Waiting for review</h2>${pe.slice(0,6).map(p=>`<p class="lg"><a href="#/admin/proposals/${p.id}">${esc(p.title)}</a><br><span class="mut">${esc(p.type)} · ${esc(p.byName)} · ${fdt(p.at)}</span></p>`).join("")||"<p class=mut>Nothing is waiting for review.</p>"}</div>
+<div><h2>Recent activity</h2>${LOG.slice(0,6).map(l=>`<p class="lg">${esc(l.action)}<br><span class="mut">${fdt(l.at)} · ${esc(l.by)}</span></p>`).join("")||"<p class=mut>No actions logged yet.</p>"}</div></div>`},
+cases(){const st=[...new Set(CASES.map(c=>c.status))].sort(),rg=[...new Set(CASES.map(c=>c.region).filter(Boolean))].sort(),v=adminCases();
+return`<h1>Case Management <span class="mut" id="acount">(${v.length} of ${CASES.length})</span></h1><div class="tl"><input id="aq" placeholder="Search cases" value="${esc(AS.q)}"><select id="ast"><option value="">All statuses</option>${st.map(s=>`<option ${AS.st==s?"selected":""}>${esc(s)}</option>`).join("")}</select><select id="arg"><option value="">All regions</option>${rg.map(s=>`<option ${AS.rg==s?"selected":""}>${esc(s)}</option>`).join("")}</select><select id="ahl"><option value="">Needs attention: any</option>${HC.map(([k,l])=>`<option value="${k}" ${AS.hl==k?"selected":""}>${l}</option>`).join("")}</select><select id="aso">${[["new","Newest first"],["old","Oldest first"],["name","Name A to Z"],["upd","Recently edited"]].map(([k,v])=>`<option value="${k}" ${AS.so==k?"selected":""}>${v}</option>`).join("")}</select><a class="btn" href="#/edit/">+ New case</a></div>
+<div class="bulk${AS.sel.size?" on":""}" id="bulk"><b id="selc">${AS.sel.size} selected</b><button data-x="bfeat">Feature</button><button data-x="bunfeat">Unfeature</button><button data-x="barch">Archive</button><button class="dn" data-x="bdel">Delete</button></div>
+${tbl([`<input type="checkbox" id="selall" aria-label="Select all shown">`,"Case","Date","Location","Status","Edited",""],caseRows())}`},
 pages(){return`<h1>Page Management</h1><p><a class="btn" href="#/editpage/">+ New page</a></p>${tbl(["Title","Address","Status","Updated",""],PAGES.map(p=>`<tr><td><a href="#/page/${p.id}">${esc(p.title)}</a></td><td class="mut">#/page/${esc(p.id)}</td><td>${p.draft?'<span class="chip c-pending">Draft</span>':'<span class="chip c-approved">Published</span>'}</td><td>${fdd(p.updated)}</td><td class="ac"><a class="btn" href="#/editpage/${p.id}">Edit</a> <button data-x="pub" data-id="${p.id}">${p.draft?"Publish":"Unpublish"}</button> <button class="dn" data-x="pdel" data-id="${p.id}">Delete</button></td></tr>`).join("")||`<tr><td colspan="5" class="mut">No custom pages yet.</td></tr>`)}`},
 proposals(sub){if(sub){const p=PROPS.find(x=>x.id==sub);return p?propView(p,true):`<h1>Proposal</h1><p>Not found. <a href="#/admin/proposals">Back to the list</a></p>`}
 const L=PROPS.filter(x=>!AS.pu||x.by==AS.pu),row=x=>`<tr><td><a href="#/admin/proposals/${x.id}">${esc(x.title)}</a></td><td>${esc(x.type)}</td><td>${esc(x.byName)}</td><td>${fdt(x.at)}</td><td>${chip(x.status)}</td><td>${fdt(x.reviewedAt)}</td></tr>`,H=["Proposal","Type","Editor","Submitted","Status","Reviewed"],pe=L.filter(x=>x.status=="pending"),rv=L.filter(x=>x.status!="pending");
@@ -330,12 +414,13 @@ users(){return`<h1>User Management <span class="mut">(${USERS.length})</span></h
 log(){return`<h1>Activity Log</h1><div class="tl"><input id="aq" placeholder="Filter the log" value="${esc(AS.q)}"></div>${tbl(["When","Who","Action"],logRows())}`},
 trash(){const row=(c,k)=>`<tr><td>${esc(c.name||c.title)}</td><td>${k=="c"?(c.arch?"Archived case":"Deleted case"):"Deleted page"}</td><td>${fdd(c.delAt)}</td><td class="ac"><button data-x="${k}rst" data-id="${c.id}">Restore</button> <button class="dn" data-x="${k}prg" data-id="${c.id}">Delete permanently</button></td></tr>`;
 return`<h1>Deleted Content</h1><p class="mut">Restore an item, or delete it permanently. Permanent deletion cannot be undone.</p>${tbl(["Title","Type","Removed",""],DELETED.map(c=>row(c,"c")).join("")+DPAGES.map(c=>row(c,"p")).join("")||`<tr><td colspan="4" class="mut">Nothing here.</td></tr>`)}`},
-settings(){return`<h1>Website Settings</h1><div class="f"><h2>Admin panel appearance</h2><div class="two"><div><label>Theme</label><select id="pth">${[["auto","Match my device"],["light","Light"],["dark","Dark"]].map(([k,v])=>`<option value="${k}" ${(AP.theme||"auto")==k?"selected":""}>${v}</option>`).join("")}</select></div><div><label>Accent colour</label><input type="color" id="pac" value="${AP.acc||"#3366cc"}"></div></div><label><input type="checkbox" id="pcp" ${AP.compact?"checked":""}> Compact tables</label></div>`+R.settings().replace("<h1>Customize site</h1>","")},
-backup(){return`<h1>Backup and Restore</h1><p>Download cases, pages, deleted items and site settings as one JSON file.</p><p><button type="button" id="dlb" class="sv">Download backup</button></p><h2>Restore</h2><p class="note">Restoring replaces all current cases, pages and settings with the file's contents. Download a fresh backup first.</p><p><input type="file" id="rbb" accept="application/json"> <span class="mut" id="bmsg"></span></p>`}};
+settings(){return`<h1>Website Settings</h1><div class="f"><h2>Admin panel</h2><label><input type="checkbox" id="pcp" ${AP.compact?"checked":""}> Compact tables</label></div>`+R.settings().replace("<h1>Customize site</h1>","")},
+backup(){return`<h1>Backup and Restore</h1><p>Download cases, pages, deleted items and site settings as one JSON file.</p><p><button type="button" id="dlb" class="sv">Download backup</button></p><h2>Restore</h2><p class="note">Restoring replaces all current cases, pages and settings with the file's contents. Download a fresh backup first.</p><p><input type="file" id="rbb" accept="application/json"> <span class="mut" id="bmsg"></span></p>
+<h2>Spreadsheet (CSV)</h2><p class="mut">Export all cases to open in Excel or Google Sheets, or import new ones. Columns: name, year, month, place, region, status, latitude, longitude, summary, sources (separate several sources with “ | ”). Cases that already exist are skipped.</p><p><button type="button" data-x="csvx">Export CSV</button> <button type="button" data-x="csvt">Blank template</button></p><p><input type="file" id="csvin" accept=".csv,text/csv"> <span class="mut" id="cmsg"></span></p><p id="cgo"></p>`}};
 R.adm=(sec,sub)=>{if(!canEdit())return`<h1>Admin Panel</h1><p>The Admin Panel is only available to the Founder. ${user?"Your account does not have access.":"Sign in with the Founder's Google account."}</p>`;
-sec=SECS.some(s=>s[0]==sec)?sec:"overview";if(AS.sec!=sec){AS.q=AS.st=AS.rl="";if(sec!="proposals")AS.pu="";AS.sec=sec}
-const t=AP.theme||"auto",n=pend().length;
-return`<div class="adm ${t=="dark"?"dk":t=="light"?"lt":""} ${AP.compact?"cp":""}" style="--aa:${esc(AP.acc||"#3366cc")}"><aside class="sb"><b style="display:block;padding:4px 10px 12px;font-size:15px">${esc(SITE.title)}<br><span class="mut">Admin Panel</span></b>${SECS.map(([k,l])=>`<a href="#/admin/${k}" class="${k==sec?"on":""}">${l}${k=="proposals"&&n?`<span class="chip">${n}</span>`:""}</a>`).join("")}<a href="#/" style="margin-top:14px;border-top:1px solid var(--bd);border-radius:0">Return to Website</a></aside><section class="am">${AD[sec](sub)}</section></div>`};
+sec=SECS.some(s=>s[0]==sec)?sec:"overview";if(!AS.sel)AS.sel=new Set();if(AS.sec!=sec){if(!AS.keep)AS.q=AS.st=AS.rl=AS.hl=AS.rg="";AS.keep=0;AS.sel=new Set();if(sec!="proposals")AS.pu="";AS.sec=sec}
+const n=pend().length,bin=DELETED.length+DPAGES.length,h=AD[sec](sub).replace(/^<h1([^>]*)>([\s\S]*?)<\/h1>/,'<h2 class="sh"$1>$2</h2>');
+return`<div class="adm ${AP.compact?"cp":""}"><h1>Admin panel</h1><nav class="atabs">${SECS.map(([k,l])=>`<a href="#/admin/${k}" class="${k==sec?"on":""}">${l}${k=="proposals"&&n?`<span class="chip">${n}</span>`:""}${k=="trash"&&bin?`<span class="chip">${bin}</span>`:""}</a>`).join("")}</nav>${h}</div>`};
 R.profile=id=>{const u=USERS.find(x=>x.id==id);if(!u)return`<h1>Profile</h1><p class="mut">No such profile.</p>`;const own=user&&user.uid==id,mine=own||canEdit(),L=mine?PROPS.filter(p=>p.by==id):[],cn=s=>L.filter(p=>p.status==s).length;
 return`<div class="ph">${av(u,96)}<div><h1 style="border:0;margin:0">${esc(u.name)}</h1>${chip(u.role||"member")}${u.status=="disabled"&&canEdit()?" "+chip("disabled"):""}</div></div>${own?`<p><a class="btn" href="#/editprofile">Edit profile</a></p>`:""}<p>${u.bio?esc(u.bio).replace(/\n/g,"<br>"):'<span class="mut">No biography yet.</span>'}</p><table class="info" style="float:none;width:100%;max-width:440px"><tr><th>Member since</th><td>${fdd(u.created)}</td></tr><tr><th>Published contributions</th><td>${u.contrib||0}</td></tr>${mine?`<tr><th>Proposals</th><td>${L.length} submitted · ${cn("pending")} pending · ${cn("approved")} approved · ${cn("rejected")} rejected</td></tr>`:""}</table>${mine&&(L.length||own)?`<h2>Proposal history</h2>${tbl(["Proposal","Type","Submitted","Status","Reviewed","Feedback"],L.map(p=>`<tr><td><a href="#/proposal/${p.id}">${esc(p.title)}</a></td><td>${esc(p.type)}</td><td>${fdd(p.at)}</td><td>${chip(p.status)}</td><td>${fdd(p.reviewedAt)}</td><td>${esc(p.note||"")}</td></tr>`).join("")||`<tr><td colspan="6" class="mut">No proposals yet.</td></tr>`)}`:""}`};
 R.editprofile=()=>{if(!user||!ME)return`<h1>Edit profile</h1><p>Sign in to edit your profile.</p>`;return`<h1>Edit profile</h1><form class="f" id="pff"><div class="ph">${av(ME,80)}<div><label>Profile picture (JPG, PNG, WebP or GIF, up to 5 MB)</label><input type="file" id="pph" accept="image/jpeg,image/png,image/webp,image/gif"> <button type="button" id="prm">Remove picture</button></div></div><label>Display name (2 to 40 characters)</label><input name="name" required minlength="2" maxlength="40" value="${esc(ME.name)}"><label>Biography (up to 500 characters)</label><textarea name="bio" maxlength="500">${esc(ME.bio||"")}</textarea><p><button type="button" class="sv">Save changes</button> <a href="#/profile/${user.uid}">Cancel</a></p><p class="mut" id="msg"></p></form>`};
@@ -346,14 +431,36 @@ $("#pph").onchange=async e=>{const f=e.target.files[0];if(!f)return;if(!/^image\
 $("#prm").onclick=()=>{ph="";m.textContent="The picture will be removed when you save."};
 bind(F,async()=>{const f=Object.fromEntries(new FormData(F)),n=f.name.trim().replace(/\s+/g," ");if(n.length<2||n.length>40||/[<>]/.test(n)){m.textContent="The name must be 2 to 40 characters and cannot contain < or >.";return}if(f.bio.length>500){m.textContent="The biography is limited to 500 characters.";return}
 try{await db.collection("users").doc(user.uid).update({name:n,bio:f.bio.trim(),photo:ph});toast("Profile saved");go("#/profile/"+user.uid)}catch(x){m.textContent="Save failed: "+x.message}})}
-if(p=="admin"&&canEdit()){const sec=id||"overview",RW={cases:caseRows,users:userRows,log:logRows}[sec],aq=$("#aq"),tb=$("#tb"),sl=(k,e)=>{const s=$(e);if(s)s.onchange=()=>{AS[k]=s.value;tb.innerHTML=RW()}};
-if(aq&&tb)aq.oninput=()=>{AS.q=aq.value;tb.innerHTML=RW()};sl("st","#ast");sl("so","#aso");sl("rl","#arl");
+if(p=="admin"&&canEdit()){const sec=id||"overview",RW={cases:caseRows,users:userRows,log:logRows}[sec],aq=$("#aq"),tb=$("#tb");
+const syncBulk=()=>{const b=$("#bulk");if(!b)return;b.classList.toggle("on",AS.sel.size>0);$("#selc").textContent=AS.sel.size+" selected";const all=$("#selall");if(all){const v=adminCases();all.checked=v.length>0&&v.every(c=>AS.sel.has(c.id))}};
+const retable=()=>{if(!tb||!RW)return;if(sec=="cases"){const ids=new Set(adminCases().map(c=>c.id));AS.sel=new Set([...AS.sel].filter(k=>ids.has(k)));const ac=$("#acount");if(ac)ac.textContent="("+ids.size+" of "+CASES.length+")"}tb.innerHTML=RW();syncBulk()};
+const sl=(k,e)=>{const s=$(e);if(s)s.onchange=()=>{AS[k]=s.value;retable()}};
+if(aq&&tb)aq.oninput=()=>{AS.q=aq.value;retable()};sl("st","#ast");sl("rg","#arg");sl("hl","#ahl");sl("so","#aso");sl("rl","#arl");syncBulk();
 const cl=$("[data-clr]");if(cl)cl.onclick=()=>{AS.pu="";route()};
-const ap=()=>{const a=$(".adm");a.classList.toggle("dk",AP.theme=="dark");a.classList.toggle("lt",AP.theme=="light");a.classList.toggle("cp",!!AP.compact);a.style.setProperty("--aa",AP.acc||"#3366cc");try{localStorage.setItem("nlmw-adm",JSON.stringify(AP))}catch(e){}};
-[["#pth","theme","value"],["#pac","acc","value"],["#pcp","compact","checked"]].forEach(([e,k,v])=>{const el=$(e);if(el)el.onchange=()=>{AP[k]=el[v];ap()}});
-app.onclick=async e=>{const b=e.target.closest("[data-x]");if(!b)return;const x=b.dataset.x,i=b.dataset.id;
-if(["arch","cdel","pdel","urm","cprg","pprg"].includes(x)&&!b.dataset.s){b.dataset.s=1;b.dataset.t=b.textContent;b.textContent="Click again to confirm";setTimeout(()=>{if(b.isConnected){delete b.dataset.s;b.textContent=b.dataset.t}},4000);return}
-try{
+const cp=$("#pcp");if(cp)cp.onchange=()=>{AP.compact=cp.checked;const a=$(".adm");if(a)a.classList.toggle("cp",!!AP.compact);try{localStorage.setItem("nlmw-adm",JSON.stringify(AP))}catch(e){}};
+const ci=$("#csvin");if(ci)ci.onchange=async()=>{const m=$("#cmsg"),go2=$("#cgo"),f=ci.files[0];go2.innerHTML="";if(!f)return;
+try{const rows=parseCSV(await f.text());if(rows.length<2)throw new Error("the file has no data rows");const hd=rows[0].map(h=>h.trim().toLowerCase()),col=n=>hd.indexOf(n);if(col("name")<0||col("year")<0)throw new Error("the first row must include name and year columns");
+const g=(r,n)=>{const i=col(n);return i<0?"":(r[i]||"").trim()},items=[];
+for(const r of rows.slice(1)){const name=g(r,"name"),year=+g(r,"year");if(!name||!year)continue;const la=parseFloat(g(r,"latitude")),lo=parseFloat(g(r,"longitude"));
+items.push({id:slug(name)+"-"+year,o:{name,year,month:Math.min(12,Math.max(1,+g(r,"month")||1)),place:g(r,"place"),region:g(r,"region"),status:g(r,"status")||"Other",updated:Date.now(),feat:0,lat:isFinite(la)?la:null,lon:isFinite(lo)?lo:null,summary:g(r,"summary"),background:"",investigation:"",legal:"",more:"",extra:"",refs:g(r,"sources").split("|").map(s=>s.trim()).filter(Boolean),images:[]}})}
+const fresh=items.filter(x=>!CASES.some(c=>c.id===x.id)&&!DELETED.some(c=>c.id===x.id));
+if(!fresh.length){m.textContent="Nothing to import: "+items.length+" row(s) read, all already exist.";return}
+m.textContent=fresh.length+" new case(s) found"+(items.length>fresh.length?", "+(items.length-fresh.length)+" skipped because they already exist":"")+".";
+go2.innerHTML=`<button type="button" class="sv" id="cgob">Import ${fresh.length} case(s)</button>`;
+$("#cgob").onclick=async()=>{try{for(const x of fresh)await write("cases",x.id,x.o);logA("Imported "+fresh.length+" cases from CSV");go2.innerHTML="";m.textContent="Imported "+fresh.length+" case(s).";toast("Imported.")}catch(e){m.textContent="Import failed: "+e.message}}}
+catch(x){m.textContent="Could not read the file: "+x.message}};
+app.onchange=async e=>{const t=e.target,d=t.dataset||{};
+if(d.sel){t.checked?AS.sel.add(d.sel):AS.sel.delete(d.sel);syncBulk();return}
+if(t.id=="selall"){adminCases().forEach(c=>t.checked?AS.sel.add(c.id):AS.sel.delete(c.id));retable();return}
+if(d.qs){const c=CASES.find(x=>x.id==d.qs);if(!c)return;try{const r={...c};delete r.id;await write("cases",c.id,{...r,status:t.value,updated:Date.now()});logA("Changed status of "+c.name+" to "+t.value,c.id);toast("Status updated.");retable()}catch(er){toast(er.message||"That failed.",1)}}};
+app.onclick=async e=>{const hl=e.target.closest("[data-hl]");if(hl){AS.hl=hl.dataset.hl;AS.keep=1;return}const b=e.target.closest("[data-x]");if(!b||!b.isConnected||/^\d+$/.test(b.dataset.x))return;const x=b.dataset.x,i=b.dataset.id;
+if(["arch","cdel","pdel","urm","cprg","pprg","barch","bdel"].includes(x)&&!b.dataset.s){b.dataset.s=1;b.dataset.t=b.textContent;b.textContent="Click again to confirm";setTimeout(()=>{if(b.isConnected){delete b.dataset.s;b.textContent=b.dataset.t}},4000);return}
+try{if(x=="bfeat"||x=="bunfeat"||x=="barch"||x=="bdel"){const ids=[...AS.sel];for(const k of ids){const c=CASES.find(q=>q.id==k);if(!c)continue;const r={...c};delete r.id;
+if(x=="bfeat"||x=="bunfeat")await write("cases",k,{...r,feat:x=="bfeat"?1:0,updated:Date.now()});else await write("cases",k,{...r,del:1,delAt:Date.now(),...(x=="barch"?{arch:1}:{})})}
+logA((x=="bfeat"?"Featured ":x=="bunfeat"?"Unfeatured ":x=="barch"?"Archived ":"Deleted ")+ids.length+" cases");AS.sel=new Set();toast(ids.length+" case(s) updated.");route(true);return}
+else if(x=="csvx"){downloadFile("nl-murder-wiki-cases.csv","\uFEFF"+toCSV(caseCSV()),"text/csv");return}
+else if(x=="csvt"){downloadFile("nl-murder-wiki-template.csv","\uFEFF"+toCSV([caseCSV()[0],["Example case",2020,5,"St. John's","Avalon Peninsula","Unsolved","47.56","-52.71","One neutral sentence.","Publisher, date, https://example.com"]]),"text/csv");return}
+else 
 if(x=="arch"||x=="cdel"){const c=CASES.find(k=>k.id==i),r={...c};delete r.id;await write("cases",i,{...r,del:1,delAt:Date.now(),...(x=="arch"?{arch:1}:{})});logA((x=="arch"?"Archived":"Deleted")+" case "+c.name,i)}
 else if(x=="pub"){const q=PAGES.find(k=>k.id==i),r={...q};delete r.id;r.draft=q.draft?0:1;r.updated=Date.now();await write("pages",i,r);logA((q.draft?"Published":"Unpublished")+" page "+q.title,i)}
 else if(x=="pdel"){const q=PAGES.find(k=>k.id==i);await remove("pages",i);SITE.nav=SITE.nav.filter(n=>n.t!="page:"+i);await saveSite({nav:SITE.nav});logA("Deleted page "+q.title,i)}
@@ -370,7 +477,7 @@ const cf=propConflict(q,(q.col=="cases"?CASES:PAGES).find(k=>k.id==q.target));if
 const ref=db.collection("proposals").doc(i);await db.runTransaction(async t=>{const s=await t.get(ref);if(!s.exists||s.data().status!="pending")throw new Error("This proposal was already reviewed.");t.update(ref,{status:x=="ok"?"approved":"rejected",reviewedAt:Date.now(),reviewer:user.email,note})});
 if(x=="ok"){try{q.act=="delete"?await remove(q.col,q.target):await write(q.col,q.target,{...q.data,updated:Date.now()});db.collection("users").doc(q.by).update({contrib:firebase.firestore.FieldValue.increment(1)}).catch(()=>{})}catch(er){await ref.update({status:"pending",reviewedAt:null,reviewer:null,note:""});throw er}}
 logA((x=="ok"?"Approved":"Rejected")+" proposal: "+q.title,i);toast(x=="ok"?"Approved and applied.":"Rejected. Published content is unchanged.");go("#/admin/proposals");return}
-toast("Done.");route()}catch(er){toast(er.message||"That failed.",1);if(b.isConnected){delete b.dataset.s;if(b.dataset.t)b.textContent=b.dataset.t}}}}}
+toast("Done.");route(true)}catch(er){toast(er.message||"That failed.",1);if(b.isConnected){delete b.dataset.s;if(b.dataset.t)b.textContent=b.dataset.t}}}}}
 // ---------- chrome ----------
 function theme(){const r=document.documentElement.style,t=SITE.theme||{};["--acc","--link","--bg","--fg","--font","--hf","--w"].forEach(k=>r.removeProperty(k));
 if(t.acc){r.setProperty("--acc",t.acc);r.setProperty("--link",t.link);r.setProperty("--bg",t.bg);r.setProperty("--fg",t.fg);r.setProperty("--bd","#8884");r.setProperty("--mut","#888");const f={sans:"system-ui,sans-serif",serif:"Georgia,serif",mono:"ui-monospace,Menlo,monospace"}[t.font]||"system-ui,sans-serif";r.setProperty("--font",f);r.setProperty("--hf",f);r.setProperty("--w",(t.w||820)+"px")}else r.removeProperty("--bd")}
@@ -388,11 +495,11 @@ if(b("so"))b("so").onclick=()=>firebase.auth().signOut();
 if(b("le"))b("le").onclick=()=>{localEdit=true;route()};if(b("lo"))b("lo").onclick=()=>{localEdit=false;route()}}
 function bind(f,fn){const b=f.querySelector("button.sv");b.onclick=()=>{if(f.reportValidity())fn()};f.onkeydown=e=>{if(e.key=="Enter"&&e.target.tagName=="INPUT"&&e.target.type!="file"){e.preventDefault();b.click()}}}
 const twoStep=(el,fn)=>{if(el)el.onclick=async e=>{e.preventDefault();if(!el.dataset.s){el.dataset.s=1;el.textContent="Click again to confirm delete";return}try{await fn()}catch(x){el.textContent="Delete failed: "+x.message}}};
-function go(h){cur=h;try{history.replaceState(null,"",h)}catch(e){}route()}
+function go(h){const same=h===cur;cur=h;if(!same){try{history.pushState(null,"",h)}catch(e){}}route()}
 document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest("a[href^='#']");if(!a)return;e.preventDefault();go(a.getAttribute("href"))});
-function route(){const h=cur.replace(/^#\/?/,"").split("/"),p=h[0]||"home",id=h[1];
+function route(keep){const h=cur.replace(/^#\/?/,"").split("/"),p=h[0]||"home",id=h[1];
 const f={case:()=>R.case(id),edit:()=>R.edit(id),page:()=>R.page(id),editpage:()=>R.editpage(id),search:()=>R.search(decodeURIComponent(id||"")),admin:()=>R.adm(id,h[2]),profile:()=>R.profile(id),editprofile:()=>R.editprofile(),proposal:()=>R.proposal(id)}[p]||(Object.hasOwn(R,p)?R[p]:R.home);
-app.innerHTML=f();scrollTo(0,0);chrome();document.body.classList.toggle("isadm",p=="admin"&&canEdit());
+app.onclick=null;app.onchange=null;window.onbeforeunload=null;let html;try{html=f()}catch(e){console.error(e);html="<h1>Something went wrong</h1><p class=mut>"+esc(e.message)+"</p>"}app.innerHTML=html;if(!keep)scrollTo(0,0);chrome();document.body.classList.toggle("isadm",p=="admin"&&canEdit());document.body.classList.toggle("wide",(p=="edit"||p=="editpage")&&(canEdit()||canProp()));
 if(p=="locations"){const mf=mapInit(app.querySelector(".mapbox"),{pins:pins(),pick:canEdit()?(la,lo)=>{NEWAT={lat:la,lon:lo};$("#pinfo").innerHTML=`New case at ${la.toFixed(3)}, ${lo.toFixed(3)}: <a href="#/edit/">Create it</a>`}:null,onPin:q=>{const c=q.c;$("#pinfo").innerHTML=`${th(c)}<b>${link(c)}</b><br><span class="mut">${MON[c.month-1]} ${c.year} · ${esc(c.place)} · ${esc(c.status)}</span><br>${esc(c.summary)}`}});
 const chips=app.querySelectorAll(".flt [data-f]"),yr=app.querySelector("#yr"),yrr=app.querySelector("#yrr");
 let fst="all";const ys=years();yr.min=Math.min.apply(null,ys);yr.max=Math.max.apply(null,ys.concat([new Date().getFullYear()]));yr.value=+yr.min;
@@ -400,23 +507,8 @@ const apply=()=>{chips.forEach(b=>b.classList.toggle("on",b.dataset.f===fst));yr
 chips.forEach(b=>b.onclick=()=>{fst=b.dataset.f;apply()});yr.oninput=apply;apply()}
 if(p=="case")twoStep($("#del"),async()=>{if(canEdit()){const c=CASES.find(x=>x.id==id);await remove("cases",id);logA("Deleted case "+(c?c.name:id),id);go("#/cases")}else{await propose("cases",id,"delete");toast("Deletion proposed for review.");go("#/profile/"+user.uid)}});
 const cl=$("#clone");if(cl)cl.onclick=()=>{CLONE=id;go("#/edit/")};
-if(p=="edit"&&(canEdit()||canProp())){imgEd($("#ie"),DRAFT);const F=$("#ef"),I=n=>F.elements[n];
-const msgEl=$("#msg");const DK="nlmw-draft-"+(id||"new");
-try{const d=JSON.parse(localStorage.getItem(DK)||"{}");for(const k in d)if(F.elements[k]&&F.elements[k].type!="file")F.elements[k].value=d[k]}catch(e){}
-F.addEventListener("input",()=>{try{localStorage.setItem(DK,JSON.stringify(Object.fromEntries(new FormData(F))))}catch(e){}});
-const map=mapInit(F.querySelector(".mapbox"),{pick:(la,lo)=>{I("lat").value=la.toFixed(4);I("lon").value=lo.toFixed(4)},marker:EDITING.lat!=null?{lat:+EDITING.lat,lon:+EDITING.lon}:null,pins:[]});
-const mv=()=>{const a=parseFloat(I("lat").value),b=parseFloat(I("lon").value);if(isFinite(a)&&isFinite(b))map.mark(a,b)};I("lat").oninput=I("lon").oninput=mv;
-I("place").onchange=()=>{const g=PLACES.find(x=>x[0].toLowerCase()==I("place").value.trim().toLowerCase());if(g){I("region").value=g[1];I("lat").value=g[2];I("lon").value=g[3];mv()}};
-bind(F,async()=>{const f=Object.fromEntries(new FormData(F)),la=parseFloat(f.lat),lo=parseFloat(f.lon);
-const nid=id||(slug(f.name)+"-"+f.year);
-if(!id&&CASES.some(c=>c.id===nid)){msgEl.textContent="An article with this name and year already exists. Change the name or year.";return}
-const o={name:f.name,year:+f.year,month:+f.month,place:f.place,region:f.region,status:f.status,updated:Date.now(),feat:+!!f.feat,lat:isFinite(la)?la:null,lon:isFinite(lo)?lo:null,summary:f.summary,background:f.background,investigation:f.investigation,legal:f.legal,more:f.more,extra:f.extra,refs:f.refs.split("\n").map(s=>s.trim()).filter(Boolean),images:DRAFT};
-try{const now=await commit("cases",nid,o);localStorage.removeItem(DK);if(now)go("#/case/"+nid);else{toast("Proposal submitted for review.");go("#/profile/"+user.uid)}}catch(x){msgEl.textContent="Save failed: "+x.message}})}
-if(p=="editpage"&&(canEdit()||canProp())){imgEd($("#ie"),DRAFT);const F=$("#pf"),msgEl2=$("#msg"),DPK="nlmw-draft-page-"+(id||"new");
-try{const d=JSON.parse(localStorage.getItem(DPK)||"{}");for(const k in d)if(F.elements[k]&&F.elements[k].type!="file")F.elements[k].value=d[k]}catch(e){}
-F.addEventListener("input",()=>{try{localStorage.setItem(DPK,JSON.stringify(Object.fromEntries(new FormData(F))))}catch(e){}});twoStep($("#delp"),async()=>{if(!canEdit()){await propose("pages",id,"delete");toast("Deletion proposed for review.");return go("#/profile/"+user.uid)}await remove("pages",id);SITE.nav=SITE.nav.filter(n=>n.t!="page:"+id);await saveSite({nav:SITE.nav});logA("Deleted page "+id,id);go("#/admin/pages")});
-bind(F,async()=>{const f=Object.fromEntries(new FormData(F));let nid=id;if(!nid){const used=k=>PAGES.concat(DPAGES).some(x=>x.id==k);nid=f.slug?slug(f.slug):slug(f.title);if(f.slug&&used(nid)){msgEl2.textContent="That page address is already used. Choose another.";return}while(used(nid))nid+="-2"}
-try{const ex=PAGES.find(x=>x.id==id)||{},now=await commit("pages",nid,{title:f.title,body:f.body,images:DRAFT,updated:Date.now(),draft:canEdit()?(f.pub?0:1):(ex.draft||0)});localStorage.removeItem(DPK);if(now){if(!id&&f.tab)await saveSite({nav:[...SITE.nav,{l:f.title,t:"page:"+nid}]});go("#/page/"+nid)}else{toast("Proposal submitted for review.");go("#/profile/"+user.uid)}}catch(x){msgEl2.textContent="Save failed: "+x.message}})}
+if(p=="edit"&&(canEdit()||canProp()))hookEdit(id);
+if(p=="editpage"&&(canEdit()||canProp()))hookEditPage(id);
 if(p=="admin"&&id=="settings"&&canEdit()){imgEd($("#logoe"),DLOGO,1);imgEd($("#bane"),DBAN,1);navEd($("#nave"),DNAV);const F=$("#af");
 bind(F,async()=>{const f=Object.fromEntries(new FormData(F));try{const nav=[];for(const n of DNAV){let t=n.t;if(t=="__new"){let nid=slug(n.l);while(PAGES.some(x=>x.id==nid))nid+="-2";await write("pages",nid,{title:n.l,body:"This page is empty. Use “Edit this page” to add text and images.",images:[]});t="page:"+nid}nav.push({l:n.l,t})}
 await saveSite({title:f.title,tagline:f.tagline,notice:f.notice,about:f.about,footer:f.footer,logo:DLOGO[0]?DLOGO[0].src:"",banner:DBAN[0]?DBAN[0].src:"",nav,home:{recent:+!!f.h_recent,years:+!!f.h_years,locs:+!!f.h_locs,latest:+!!f.h_latest},customcss:f.customcss||"",theme:f.usetheme?{acc:f.acc,link:f.link,bg:f.bg,fg:f.fg,font:f.font,w:+f.w}:{}});logA("Updated website settings");toast("Settings saved.");go("#/admin/settings")}catch(x){$("#msg").textContent="Save failed: "+x.message}})}
@@ -430,7 +522,8 @@ if(live){const b2=db.batch();d.cases.forEach(c=>{const{id,...r}=c;b2.set(db.coll
 else{CASES=d.cases.filter(c=>!c.del);DELETED=d.cases.filter(c=>c.del);PAGES=d.pages||[];SITE={...structuredClone(DEF),...d.site};persist()}
 $("#bmsg").textContent="Restore complete.";setTimeout(()=>go("#/"),700)}catch(x){$("#bmsg").textContent="Restore failed: "+x.message}};hooks(p,id,h[2])}
 bind($("#sf"),()=>go("#/search/"+encodeURIComponent($("#q").value)));
-addEventListener("hashchange",()=>{if(location.hash&&location.hash!==cur){cur=location.hash;route()}});
+addEventListener("hashchange",()=>{const h=location.hash||"#/";if(h!==cur){cur=h;route()}});
+const rf=()=>{if(/^#\/(edit|editpage|editprofile|admin\/settings|admin\/backup)/.test(cur))return chrome();const a=document.activeElement;if(a&&app.contains(a)&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return chrome();route(true)};
 function startLive(){CASES=structuredClone(SAMPLES);usingSamples=true;firebase.initializeApp(FIREBASE_CONFIG);db=firebase.firestore();
 firebase.auth().onAuthStateChanged(u=>{user=u;unsub.forEach(f=>f());unsub=[];ME=null;PROPS=[];LOG=[];PRIV={};
 if(u){const ur=db.collection("users").doc(u.uid),fe=canEdit(),pm=d=>({id:d.id,...d.data()});
@@ -438,10 +531,10 @@ unsub.push(ur.onSnapshot(async d=>{if(d.exists){ME=pm(d);rt()}else try{await ur.
 unsub.push((fe?db.collection("proposals"):db.collection("proposals").where("by","==",u.uid)).onSnapshot(s=>{PROPS=s.docs.map(pm).sort((a,b)=>b.at-a.at);rr()},()=>{}));
 if(fe){unsub.push(db.collection("log").orderBy("at","desc").limit(300).onSnapshot(s=>{LOG=s.docs.map(pm);rr()},()=>{}));unsub.push(db.collection("private").onSnapshot(s=>{PRIV={};s.docs.forEach(d=>PRIV[d.id]=d.data());rr()},()=>{}))}}
 route()});
-db.collection("cases").onSnapshot(s=>{usingSamples=s.empty;const all=s.empty?structuredClone(SAMPLES):s.docs.map(d=>({id:d.id,...d.data()}));CASES=all.filter(c=>!c.del);DELETED=all.filter(c=>c.del);if(!/edit/.test(cur))route()},()=>{});
-db.collection("pages").onSnapshot(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));PAGES=a.filter(x=>!x.del);DPAGES=a.filter(x=>x.del);if(!/edit|admin\/settings/.test(cur))route()},()=>{});
-db.collection("site").doc("main").onSnapshot(d=>{SITE={...structuredClone(DEF),...(d.data()||{})};if(!/edit|admin\/settings/.test(cur))route()},()=>{});
+db.collection("cases").onSnapshot(s=>{usingSamples=s.empty;const all=s.empty?structuredClone(SAMPLES):s.docs.map(d=>({id:d.id,...d.data()}));CASES=all.filter(c=>!c.del);DELETED=all.filter(c=>c.del);rf()},()=>{});
+db.collection("pages").onSnapshot(s=>{const a=s.docs.map(d=>({id:d.id,...d.data()}));PAGES=a.filter(x=>!x.del);DPAGES=a.filter(x=>x.del);rf()},()=>{});
+db.collection("site").doc("main").onSnapshot(d=>{SITE={...structuredClone(DEF),...(d.data()||{})};rf()},()=>{});
 db.collection("users").onSnapshot(s=>{USERS=s.docs.map(d=>({id:d.id,...d.data()}));rr()},()=>{})}
-try{if(live)startLive();else loadLocal()}catch(e){console.error("Firebase failed, using local mode:",e);live=false;loadLocal()}
+try{if(live)startLive();else loadLocal()}catch(e){console.error("Firebase failed, using local mode:",e);live=false;db=null;loadLocal()}
 route();
 </script></body></html>
